@@ -55,11 +55,8 @@
         const countdownTimer = setInterval(() => {
             let minutes = Math.floor(timeLeft / 60);
             let seconds = timeLeft % 60;
-            
             seconds = seconds < 10 ? '0' + seconds : seconds;
-            
             countdownElement.textContent = `${minutes}:${seconds}`;
-            
             if (timeLeft <= 0) {
                 timeLeft = 60;
             }
