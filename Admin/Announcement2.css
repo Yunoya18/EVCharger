@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Krona One', sans-serif;
+    height: 100vh;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-content {
+    width: 100vw; /* กำหนดให้ใช้ 100% ของความกว้างของ viewport */
+    height: 100vh; /* กำหนดให้ใช้ 100% ของความสูงของ viewport */
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 24px; /* ขนาดของหัวข้อ */
+    margin-bottom: 20px; /* เว้นระยะห่างจากกรอบ */
+}
+
+.outer-frame {
+    width: 100%; /* ทำให้กรอบใหญ่เต็มความกว้าง */
+    height: calc(100% - 70px); /* ทำให้กรอบสีขาวเต็มความสูง แต่มีพื้นที่สำหรับหัวข้อ */
+    padding: 20px; /* เว้นระยะห่างภายในกรอบ */
+    background-color: white; /* พื้นหลังสีขาว */
+    border-radius: 10px; /* มุมโค้ง */
+    box-shadow: 0 3px 10.7px rgba(0, 0, 0, 0.1); /* drop shadow */
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* ระยะห่างระหว่างแต่ละกรอบ */
+}
+
+.frame {
+    display: flex;
+    flex-direction: column;
+    background-color: #e0e0e0; /* สีพื้นหลังของกรอบ */
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.input-container, .send-to-container, .recently-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container label, .send-to-container label {
+    margin-bottom: 5px; /* ระยะห่างระหว่าง label และ input */
+    font-weight: bold;
+}
+
+.input-container input, .send-to-container input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.recently-frame {
+    margin-top: 10px; /* ระยะห่างที่เหมาะสมระหว่างกรอบด้านบนกับ recently */
+}
+
+.recently-container {
+    margin-top: 10px;
+}
+
+.recently-box {
+    width: 100%; /* ให้เต็มกรอบ */
+    height: 250px; /* ขยายความสูงของกล่อง recently */
+    background-color: #9e9e9e; /* สีพื้นหลังของกล่อง recently */
+    border-radius: 5px;
+}
