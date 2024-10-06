@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            height: 1000px;
+            margin: 50px;
+            gap: 30px;
+        }
+        .content-header {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 10px;
+        }
+
+        .content-header div {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 50%;
+            height: 200px;
+            font-size: 7vh;
+            text-align: center;
+        }
+        .content-header .active {
+            background-color: gray;
+            color: white;
+        }
+        .content-header .state {
+            background-color: orange;
+        }
+        .content-header .active:hover {
+            background-color: rgb(87, 84, 78);
+        }
+        .content-header .state:hover {
+            background-color: rgb(165, 121, 39);
+        }
+        .cusimg{
+            width: 20vh;
+            margin-bottom: 10px;
+        }
+        .gasimg{
+            width: 15vh;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: rgb(170, 165, 165);
+            margin: 0;
+        }
+        .stats {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            gap: 40px;
+            align-items: center;
+            
+        }
+
+        .stats div {
+            padding: 20px;
+            background-color: white;
+            text-align: center;
+            filter: drop-shadow(0.25px 0.25px 2px #4b4a4a);
+            border-radius: 10px;
+            width: 100%;
+        }
+        .bottom {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            gap: 50px;
+        }
+
+        .status-section {
+            width: 50%;
+            background-color: white;
+            filter: drop-shadow(0.25px 0.25px 2px #4b4a4a);
+            border-radius: 10px;
+            padding: 20px;
+            height: 600px;
+        }
+        .totalcus{
+            flex-grow: 1;
+        }
+        .totalbook{
+            flex-grow: 1;
+        }
+        
+
+        @media (max-width: 1000px){
+            .content-header div{
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-header">
+        <div class="active"><img class="cusimg"src="img/customer-icon.png" alt="Customer Icon">Customer</div>
+        <div class="state"><img class="gasimg" src="img/Gas Station.png" alt="Station Icon">Station</div>
+    </div>
+    <hr>
+    <div class="bottom">
+        <div class="status-section">
+            <h2>In-Active</h2>
+            <p>No customers are currently active.</p>
+        </div>
+        <div class="stats">
+            <div class="totalbook">
+                <h3>Total Booking</h3>
+                <p>0</p>
+            </div>
+            <div class="totalcus">
+                <h3>Total Customer</h3>
+                <p>0</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
