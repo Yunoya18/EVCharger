@@ -6,8 +6,6 @@
     <title>EvCharger</title>
 </head>
 <style>
-
-
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -23,8 +21,6 @@
             width: 100%;
             max-width: 400px;
         }
-
-
         .header {
             display: flex;
             justify-content: space-between;
@@ -72,24 +68,26 @@
         .booking-btn {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             background-color: #FF7D00;
-            color: white;
-            font-size: 20px;
-            padding: 15px;
+            color: rgb(0, 0, 0);
             border: none;
             border-radius: 10px;
             margin-bottom: 20px;
             width: 100%;
             height: 20vh;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .booking-btn img {
             margin-right: 10px;
-            width: 25px;
+            width: 50%;
         }
-
+        .booking-btn h2{
+            width: 50%;
+            font-size: 3vh;
+        }
 
         .sub-buttons {
             display: flex;
@@ -102,6 +100,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
+            gap: 10vh;
             padding: 10px;
             background-color: white;
             border-radius: 10px;
@@ -111,7 +110,7 @@
 
         .sub-button img {
             margin-right: 10px;
-            width: 25px;
+            width: 10vh;
         }
 
         .sub-button h2 {
@@ -144,7 +143,7 @@
 
         <div class="header">
             <a href="" class="user-icon">
-                <img src="user-icon.png" alt="User Icon"> GUEST
+                <img src="../img/Group 5.png" alt="User Icon"> GUEST
             </a>
             <a href="" class="menu-icon" style="text-decoration: none;">•••</a>
         </div>
@@ -155,18 +154,18 @@
         </div>
 
 
-        <button class="booking-btn">
-            <img src="car-icon.png" alt="Car Icon"> Booking
-        </button>
+        <a href="station-list.html" class="booking-btn">
+            <img src="../img/Sedan.png" alt="Car Icon"> <h2>Booking</h2>
+        </a>
 
 
         <div class="sub-buttons">
             <div class="sub-button">
-                <img src="booking-list-icon.png" alt="Booking List Icon">
+                <img src="../img/Car.png" alt="Booking List Icon">
                 <h2>Booking list</h2>
             </div>
             <div class="sub-button">
-                <img src="result-icon.png" alt="Result Icon">
+                <img src="../img/Delivery Time.png" alt="Result Icon">
                 <h2>Result</h2>
             </div>
         </div>

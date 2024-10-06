@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Booking</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header {
+            background-color: #FF7D00;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .header .back-btn {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            margin-top: 60px; /* Space for the header */
+        }
+
+        .station-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .station-info {
+            padding: 10px 0;
+            overflow: scroll;
+        }
+
+        .station-info h2 {
+            margin: 3px 0 5px;
+            font-size: 22px;
+        }
+
+        .station-info p {
+            margin: 0;
+            color: gray;
+        }
+
+        .booking-btn-container {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: flex-end;
+            background-color: white;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-btn {
+            width: 40%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #FF7D00;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .sepimg{
+            border: 0;
+            height: 1px;
+            background-color: rgb(170, 165, 165);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="station-list.html" class="back-btn" style="text-decoration: none;">&#8249;</a>
+        <h1>รอจินจา</h1>
+    </div>
+
+    <div class="container">
+        <div style="background-color: white; height: 40vh; margin-bottom: 20px;">
+            <img class="station-image" src="station-image.jpg" alt="รอรูปจากจินจา">
+        </div>
+        <hr class="sepimg">
+        <div class="station-info">
+            <h2>รอจินจาอ้า</h2>
+            <p>Description...</p>
+        </div>
+    </div>
+
+    <div class="booking-btn-container">
+        <button class="booking-btn">Booking</button>
+    </div>
+
+</body>
+</html>
