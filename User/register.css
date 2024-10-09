@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+
+.back-button {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+
+.back-button a {
+    text-decoration: none;
+    font-size: 60px;
+    color: #fff;
+}
+
+
+.header{
+    height: 120px;
+    background-color: #FF9500;
+}
+
+.header h1{
+    font-size: 42px;
+    padding-top: 65px;
+    text-align: center;
+}
+
+.back-button {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+
+.back-button a {
+    text-decoration: none;
+    font-size: 60px;
+    color: #fff;
+}
+
+button {
+    width: 200px;
+    margin: 10px;
+    margin-left: 5px;
+    padding: 8px;
+    background-color: #FF9000;
+    border: none;
+    border-radius: 10px;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #ff7a00;
+}
+
+.info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+
+}
+.info input{
+    margin: 5px;
+    padding: 2px;
+    width: 200px;
+    height: 30px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    
+}
+
+.info .log input{
+    background: #CFCFCF;
+}
+
+
+.info a{
+    color: #FF9500;
+}
+
