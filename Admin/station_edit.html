@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Layout</title>
+    <link rel="stylesheet" href="station_edit.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Station</h1>
+        <div class="content-area">
+            <span>เด็กชาย โฟค รวยคับ</span>
+            <button class="edit-btn"id="edit-btn">Edit</button>
+        </div>
+            <div id="popup-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Station 1</h2>
+                <p>รู้ว่าต้องกดดู</p>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
+        <div class="pagination">
+            <button class="pagination-btn">&#8249;</button>
+            <button class="pagination-btn">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">6</button>
+            <button class="pagination-btn">&#8250;</button>
+        </div>
+    </div>
+    <script>
+        const modal = document.getElementById("popup-modal");
+        const btn = document.getElementById("edit-btn");
+        const closeBtn = document.getElementsByClassName("close-btn")[0];
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
+
