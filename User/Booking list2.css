@@ -82,8 +82,12 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    text-align: center;
+    text-decoration: none;
 }
-
+.buttons a{
+    text-decoration: none;
+}
 .status-btn {
     font-family: 'Inter', sans-serif;
     width: 80%;
@@ -118,8 +122,8 @@ body {
     align-items: center;
     position: absolute;
     bottom: 10px;
-    left: 50%; /* กำหนดให้ตำแหน่งทางซ้ายอยู่กลางหน้าจอ */
-    transform: translateX(-150px); /* ปรับให้ขยับไปใต้กล่องล่างสุด */
+    left: 50%;
+    transform: translateX(-150px);
     cursor: pointer;
 }
 
