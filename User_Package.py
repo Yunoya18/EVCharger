@@ -1,7 +1,12 @@
-from fastapi import FastAPI, Request, APIRouter
+from fastapi import FastAPI, Request, APIRouter, Form, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.exceptions import HTTPException
+from DatabaseConnection import Database
+from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import RedirectResponse
+
 
 # Class User
 class User:
@@ -217,6 +222,29 @@ class History:
     def set_booking_list(self,booking_list):
         self.__booking_list = booking_list
 
+def get_current_user(request: Request):
+    # Check for user cookie
+    user = request.cookies.get("username")
+    
+    if not user:
+        # If no cookie, redirect to login page
+        raise HTTPException(status_code=303, detail="Not authenticated", headers={"Location": "/login"})
+    return user
+
+class AuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # List of paths that do not require authentication
+        exempt_paths = ["/login", "/register", "/static", "/"]
+
+        # If the request path is not in exempt_paths, check if the user is logged in
+        if not any(request.url.path.startswith(path) for path in exempt_paths):
+            user = request.cookies.get("username")
+            if not user:
+                return RedirectResponse(url="/login")  # Redirect to login if not authenticated
+
+        response = await call_next(request)
+        return response
+
 # Class Main_page
 class Main_page:
     def __init__(self):
@@ -224,36 +252,43 @@ class Main_page:
         self.__app = FastAPI()
         self.__templates = Jinja2Templates(directory="templates")
         self.__app.mount("/static", StaticFiles(directory="static"), name="static")
+
+        #set page
         self.__booking_station_list_page = Booking_Station_list_page()
+        self.__login_page = Login_Page(self)
+        self.__register_page = Register_Page()
         self.__setting_page = Setting_page()
         self.__profile_page = Profile_page()
-        self.__booking_list_page = Booking_List_page()
+        self.__bookinglist_page = Booking_List_page()
+        self.__result_page = Result()
+
+        self.__app.add_middleware(AuthMiddleware)
+
         self.setup_routes()
         self.include_routers()
+
+    def set_user(self, user):
+        self.__user = user
+
+    def get_user(self):
+        return self.__user
 
     def setup_routes(self):
         @self.__app.get("/", response_class=HTMLResponse)
         async def showmain_page(request: Request):
-            return self.__templates.TemplateResponse("Customer-main.html", {"request": request,})
+            username = request.cookies.get("username")  # Get the username from cookies
+            return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": username})
 
-        @self.__app.post("/booking", response_class=HTMLResponse)
-        async def toBooking_Station_list_page(request: Request):
-            return RedirectResponse(url="/booking", status_code=303)
-
-        @self.__app.post("/setting", response_class=HTMLResponse)
-        async def toSetting_page(request: Request):
-            return RedirectResponse(url="/setting", status_code=303)
-
-        @self.__app.post("/booking_list", response_class=HTMLResponse)
-        async def toBookingActive(request: Request):
-            return RedirectResponse(url="/booking_list", status_code=303)
 
     def include_routers(self):
         # รวม APIRouter จากคลาสอื่นๆ
         self.__app.include_router(self.__booking_station_list_page.get_router())
-        self.__app.include_router(self.__setting_page.get_router())
+        self.__app.include_router(self.__login_page.get_router())
+        self.__app.include_router(self.__register_page.get_router())
         self.__app.include_router(self.__profile_page.get_router())
-        self.__app.include_router(self.__booking_list_page.get_router())
+        self.__app.include_router(self.__setting_page.get_router())
+        self.__app.include_router(self.__bookinglist_page.get_router())
+        self.__app.include_router(self.__result_page.get_router())
 
     def get_app(self):
         return self.__app
@@ -267,17 +302,85 @@ class Booking_Station_list_page:
 
     def setup_routes(self):
         @self.__router.get("/booking", response_class=HTMLResponse)
-        async def showBooking_Station_list_page(request: Request):
+        async def toBooking_Station_list_page(request: Request):
+            # ส่งข้อมูลผู้ใช้ไปยัง template
             return self.__templates.TemplateResponse("station-list.html", {"request": request})
-
-        @self.__router.post("/", response_class=HTMLResponse)
-        async def tomain_page(request: Request):
-            return RedirectResponse(url="/", status_code=303)
 
     def get_router(self):
         return self.__router
 
-# Class Setting_page
+# Login page
+class Login_Page:
+    def __init__(self, main_page):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.__database = Database()
+        self.setup_routes()
+
+    def setup_routes(self):
+        import hashlib
+        @self.__router.get("/login", response_class=HTMLResponse)
+        async def to_login_page(request: Request):
+            return self.__templates.TemplateResponse("login.html", {"request": request})
+
+        @self.__router.post("/login")
+        async def login_user(request: Request, username: str = Form(...), password: str = Form(...)):
+            hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            user = self.__database.validate_user(username, hash_password)
+            if user:
+                # Successful login: Store user information or set session here if needed
+                print(f"User logged in: {user[2]}")  # Log the user's first name
+                response = RedirectResponse(url="/", status_code=303)  # Redirect to main page on success
+                response.set_cookie(key="username", value=user[2])  # Store username in cookie
+                return response
+            else:
+                return {"message": "Invalid username or password."}  # Handle login failure
+
+        @self.__router.post("/logout")
+        async def logout_user(request: Request):
+            response = RedirectResponse(url="/", status_code=303)
+            response.delete_cookie("username")  # Clear the username cookie
+            return response
+
+    def get_router(self):
+        return self.__router
+
+# Register Page
+class Register_Page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.__database = Database()
+        self.setup_routes()
+
+    def setup_routes(self):
+        import hashlib
+        @self.__router.get("/register", response_class=HTMLResponse)
+        async def to_register_page(request: Request):
+            return self.__templates.TemplateResponse("register.html", {"request": request})
+
+        @self.__router.post("/register")
+        async def register_user(
+            request: Request, 
+            username: str = Form(...), 
+            email: str = Form(...), 
+            password: str = Form(...),
+            confirmpassword: str = Form(...)):
+
+            hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            hash_confirm = hashlib.sha256(confirmpassword.encode('utf-8')).hexdigest()
+            if hash_password == hash_confirm:
+                success = self.__database.insert_user(username, email, hash_password)
+                if success:
+                    return RedirectResponse(url="/login", status_code=303)  # Redirect on success
+                else:
+                    return {"message": "Registration failed. User might already exist."}  # Handle error
+            else:
+                return {"message": "Password mai thong gan a pai sai ma mai naaaaa"}
+
+    def get_router(self):
+        return self.__router
+
 class Setting_page:
     def __init__(self):
         self.__router = APIRouter()
@@ -288,15 +391,10 @@ class Setting_page:
         @self.__router.get("/setting", response_class=HTMLResponse)
         async def showSetting_page(request: Request):
             return self.__templates.TemplateResponse("setting.html", {"request": request})
-        
-        @self.__router.post("/profile", response_class=HTMLResponse)
-        async def toProfile_page(request: Request):
-            return RedirectResponse(url="/profile", status_code=303)
 
     def get_router(self):
         return self.__router
 
-# Class Profile_page
 class Profile_page:
     def __init__(self):
         self.__router = APIRouter()
@@ -310,8 +408,7 @@ class Profile_page:
 
     def get_router(self):
         return self.__router
-
-# Class Booking_List_page
+    
 class Booking_List_page:
     def __init__(self):
         self.__router = APIRouter()
@@ -322,6 +419,20 @@ class Booking_List_page:
         @self.__router.get("/booking_list", response_class=HTMLResponse)
         async def showBookingActive(request: Request):
             return self.__templates.TemplateResponse("Booking_list.html", {"request": request})
+
+    def get_router(self):
+        return self.__router
+
+class Result:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.__router.get("/result", response_class=HTMLResponse)
+        async def showResult(request: Request):
+            return self.__templates.TemplateResponse("result.html", {"request": request})
 
     def get_router(self):
         return self.__router

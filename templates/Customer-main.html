@@ -146,36 +146,27 @@
     <div class="container">
 
         <div class="header">
-            <a href="login.html" class="user-icon">
-                <img src="/static/img/Group 5.png" alt="User Icon"> GUEST
-            </a>
-            <form action="/setting" method="post">
-                <button class="menu-icon" style="text-decoration: none;">•••</button>
-            </form>
+                <form action="/login" method="get">
+                    <button type="submit" class="user-icon">
+                        <img src="/static/img/Group 5.png" alt="User Icon"> {{ user if user else "GUEST" }}
+                    </button>
+                </form>
+                <a href="/setting" class="menu-icon" style="background:none; border:none;">•••</a>
         </div>
-
 
         <div class="map-container">
             <div id="map"></div>
         </div>
-
-        <form action="/booking" method="post">
-            <button type="submit" class="booking-btn">
-                <img src="../static/img/Sedan.png" alt="Car Icon">
-                <h2>Booking</h2>
-            </button>
-        </form>
-        
-
-
+        <a href="/booking" class="booking-btn">
+            <img src="../static/img/Sedan.png" alt="Car Icon">
+            <h2>Booking</h2>
+        </a>
         <div class="sub-buttons">
-            <form action="/booking_list" method="post">
-            <button style="text-decoration: none;"class="sub-button">
+            <a href="/booking_list" style="text-decoration: none;"class="sub-button">
                 <img src="../static/img/Car.png" alt="Booking List Icon">
                 <h2>Booking list</h2>
-            </button>
-            </form>
-            <a href="result.html" style="text-decoration: none;"class="sub-button">
+            </a>
+            <a href="/result" style="text-decoration: none;"class="sub-button">
                 <img src="../static/img/Delivery Time.png" alt="Result Icon">
                 <h2>result</h2>
             </a>

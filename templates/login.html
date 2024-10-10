@@ -4,25 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="/static/css/login.css">
 </head>
 <body>
     <div  class="header">
         <h1>Login</h1>
     </div>
     <div class="back-button">
-        <a href="Customer-main.html">&#8249;</a>
+        <a href="/">&#8249;</a>
     </div>
     <div class="info">
-        <form action="">
+        <form action="/login" method="post">
             <div class="log">
                 <label for="username">Username</label><br>
-                <input type="text"><br>
+                <input type="text" id="username" name="username" required><br>
                 <label for="password">Password</label><br>
-                <input type="text"><br>
+                <input type="password" id="password" name="password" required><br>
                 <button type="submit">Login</button>
             </div>
-            <a href="register.html" >haven't sign up yet?</a><br>
+        </form>
+        <form action="/register" method="get">
+            <button>
+                haven't signed up yet?
+            </button>
+        </form>
+        <form action="/logout" method="post">
+            <button>
+                Logout
+            </button>
         </form>
     </div>
 

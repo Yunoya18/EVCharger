@@ -4,26 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="/static/css/register.css">
 </head>
 <body>
     <div  class="header">
         <h1>Register</h1>
     </div>
     <div class="back-button">
-        <a href="login.html">&#8249;</a>
+        <a href="/login">&#8249;</a>
     </div>
     <div class="info">
-        <form action="">
+        <form action="/register"  method="post">
             <div class="log">
                 <label for="username">Username</label><br>
-                <input type="text"><br>
+                <input type="text" id="username" name="username" required><br>
                 <label for="email">Email</label><br>
-                <input type="text"><br>
+                <input type="text" id="email" name="email" required><br>
                 <label for="password">Password</label><br>
-                <input type="text"><br>
+                <input type="password" id="password" name="password" required><br>
                 <label for="confirmpassword">Confirm password</label><br>
-                <input type="text"><br>
+                <input type="text" id="confirmpassword" name="confirmpassword" required><br>
             </div>
             <button type="submit">Register</button>
         </form>
