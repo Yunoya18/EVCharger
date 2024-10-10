@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Booking</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            height: 170vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #FF7D00;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .header .back-btn {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            margin-top: 60px; /* Space for the header */
+        }
+
+        .station-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .station-info {
+            padding: 10px 0;
+            overflow-x: scroll;
+            height: 200px;
+        }
+        /* .station-info::-webkit-scrollbar{
+            display: none;
+        } */
+
+        .station-info h2 {
+            margin: 3px 0 5px;
+            font-size: 22px;
+        }
+
+        .station-info p {
+            margin: 0;
+            color: gray;
+        }
+
+        .booking-btn-container {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: flex-end;
+            background-color: white;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-btn {
+            width: 40%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #FF7D00;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .sepimg{
+            border: 0;
+            height: 1px;
+            background-color: rgb(170, 165, 165);
+            margin: 0;
+        }
+        .time-select {
+        padding: 20px;
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .time-select label {
+        display: flex;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .time-select input[type="date"],
+    .time-select input[type="time"] {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .foot{
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+    }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="station-list.html" class="back-btn" style="text-decoration: none;">&#8249;</a>
+        <h1>รอจินจา</h1>
+    </div>
+
+    <div class="container">
+        <div style="background-color: white; height: 40vh; margin-bottom: 20px;">
+            <img class="station-image" src="station-image.jpg" alt="รอรูปจากจินจา">
+        </div>
+        <hr class="sepimg">
+        <div class="station-info">
+            <h2>รอจินจาอ้า</h2>
+            <p>Description...</p>
+        </div>
+    </div>
+    <div class="time-select">
+        <h3>เลือกวัน เดือน ปี และเวลาในการจอง</h3>
+        <label for="booking-date">เลือกวันที่:</label>
+        <input type="date" id="booking-date" name="booking-date" min="2024-10-09">
+        <label for="booking-time">เลือกเวลา:</label>
+        <input type="time" id="booking-time" name="booking-time">
+    
+    </div>
+    <div class="foot">
+        <div class="booking-btn-container">
+            <button class="booking-btn">Booking</button>
+        </div>
+    </div>
+   
+
+</body>
+<script>document.getElementById("booking-date").addEventListener("change", function() {
+    const selectedDate = new Date(this.value);
+    const today = new Date();
+    if (selectedDate < today) {
+        alert("เลือกทำเตี่ยไร");
+        this.value = "";
+    }
+});
+</script>
+</html>

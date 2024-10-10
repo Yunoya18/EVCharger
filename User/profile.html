@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <script src="./theme.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="w-screen h-screen flex flex-col">
+      <!-- picture -->
+      <div class="bg-orange-400 h-[250px] md:h-[200px] flex">
+        <div>
+          <div class="py-3 pl-3 cursor-pointer">
+            <i class="fa-solid fa-chevron-left text-4xl"></i>
+          </div>
+        </div>
+        <div class="mt-auto flex-auto mb-4">
+          <div class="flex justify-center">
+            <div class="relative cursor-pointer" onclick="changePicture(this)">
+              <img
+                src="../img/Group 20.png"
+                class="rounded-full w-[113px] h-[113px] bg-center"
+                id="image"
+                alt=""
+              />
+              <i
+                class="fa-solid fa-square-pen text-4xl absolute -right-1 -bottom-2"
+              ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-20 flex-auto">
+        <div
+          id="modalOverlay"
+          class="fixed inset-0 hidden bg-black bg-opacity-50 justify-center items-center"
+        >
+          <div
+            id="modalContent"
+            class="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center min-w-[255px] md:w-[400px] modal-enter absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          >
+            <div class="flex justify-center">
+              <!-- Success Icon -->
+              <i
+                class="fa-solid fa-circle-check text-orange-400 text-[85px]"
+              ></i>
+            </div>
+            <h2 class="text-2xl font-semibold text-black mt-4">Success!</h2>
+            <p class="text-gray-600 mt-2">Your Profile has been saved</p>
+            <button
+              id="closeModal"
+              class="mt-6 px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-orange-500"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+        <!-- form -->
+        <!-- action="" method="post" -->
+        <form class="h-full flex flex-col pb-10" id="profile-form">
+          <input class="hidden" type="file" name="picture" id="picture" />
+          <!-- content form  -->
+          <div class="flex flex-col px-14 gap-y-6">
+            <div>
+              <label for="full_name" class="text-xl font-medium"
+                >Full Name</label
+              >
+              <input
+                type="text"
+                name="full_name"
+                class="block w-full px-0 pb-2 pt-4 border-0 border-b-2 border-[#CDCDCD] appearance-none focus:outline-none focus:ring-0 focus:border-orange-600 peer"
+                id="full_name"
+              />
+            </div>
+            <div>
+              <label for="email" class="text-xl font-medium">Email</label>
+              <input
+                type="email"
+                name="email"
+                class="block w-full px-0 pb-2 pt-4 border-0 border-b-2 border-[#CDCDCD] appearance-none focus:outline-none focus:ring-0 focus:border-orange-600 peer"
+                id="email"
+              />
+            </div>
+            <div>
+              <label for="password" class="text-xl font-medium">Password</label>
+              <input
+                type="password"
+                name="password"
+                class="block w-full px-0 pb-2 pt-4 border-0 border-b-2 border-[#CDCDCD] appearance-none focus:outline-none focus:ring-0 focus:border-orange-600 peer"
+                id="password"
+              />
+            </div>
+            <div>
+              <label for="phone" class="text-xl font-medium">Phone</label>
+              <input
+                type="text"
+                name="phone"
+                class="block w-full px-0 pb-2 pt-4 border-0 border-b-2 border-[#CDCDCD] appearance-none focus:outline-none focus:ring-0 focus:border-orange-600 peer"
+                id="phone"
+              />
+            </div>
+          </div>
+          <!-- save button -->
+          <div class="mt-auto flex flex-row">
+            <button
+              type="submit"
+              class="rounded-xl bg-orange-400 px-10 py-2 mx-auto text-2xl font-medium"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- <script src="./script.js"></script> -->
+  </body>
+</html>

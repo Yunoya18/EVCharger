@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station List</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .header {
+            background-color: #FF7D00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .header .back-btn {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            position: absolute;
+            left: 10px;
+        }
+
+        .header .btn-group {
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .btn-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: white;
+            color: #FF7D00;
+            width: 150px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .container {
+            padding: 20px;
+            margin-top: 70px; 
+            height: auto; 
+            overflow-y: scroll;
+        }
+        /* .station {
+            background-color: white;
+            border-radius: 10px;
+            height: 300px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .station img {
+            width: 100%;
+            height: auto;
+        }
+
+        .station .info {
+            padding: 10px;
+        } */
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="Customer-main.html" class="back-btn" style="text-decoration: none;">&#8249;</a> 
+        <div class="btn-group">
+            <button>Filter</button>
+        </div>
+    </div>
+
+    <div class="container">
+
+    </div>
+
+</body>
+</html>
