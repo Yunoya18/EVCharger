@@ -21,4 +21,3 @@ class db:
             except mysql.connector.Error as err:
                 print("AAAAAAAAAAAAAAAAAAAAAAAA")
 
-test = db().test_connection()
