@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, APIRouter
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 # Class User
@@ -217,21 +217,48 @@ class History:
     def set_booking_list(self,booking_list):
         self.__booking_list = booking_list
 
-#Class Main_page
+# Class Main_page
 class Main_page:
     def __init__(self):
-        self.__user = None
+        self.__user = None  # สถานะของผู้ใช้
         self.__app = FastAPI()
         self.__templates = Jinja2Templates(directory="templates")
         self.__app.mount("/static", StaticFiles(directory="static"), name="static")
+        self.__booking_station_list_page = Booking_Station_list_page()
         self.setup_routes()
+        self.include_routers()
 
     def setup_routes(self):
         @self.__app.get("/", response_class=HTMLResponse)
-        async def read_root(request: Request):
-            return self.__templates.TemplateResponse("Customer-main.html", {"request": request})
+        async def showmain_page(request: Request):
+            # ส่งข้อมูลผู้ใช้ไปยัง template
+            return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": self.__user})
 
-    def getapp(self):
+        @self.__app.post("/booking", response_class=HTMLResponse)
+        async def toBooking_Station_list_page(request: Request):
+            return RedirectResponse(url="/booking", status_code=303)
+
+    def include_routers(self):
+        # รวม APIRouter จากคลาสอื่นๆ
+        self.__app.include_router(self.__booking_station_list_page.get_router())
+
+    def get_app(self):
         return self.__app
+
+# Class Booking_Station_list_page
+class Booking_Station_list_page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.__router.get("/booking", response_class=HTMLResponse)
+        async def toBooking_Station_list_page(request: Request):
+            # ส่งข้อมูลผู้ใช้ไปยัง template
+            return self.__templates.TemplateResponse("station-list.html", {"request": request})
+
+    def get_router(self):
+        return self.__router
 m = Main_page()
-app = m.getapp()
+app = m.get_app()
