@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <title>EvCharger</title>
 </head>
 <style>
@@ -61,9 +62,12 @@
         .map-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            
         }
-
+        #map {
+            height: 80vh;
+            width: 100%;
+        }
 
         .booking-btn {
             display: flex;
@@ -143,32 +147,64 @@
 
         <div class="header">
             <a href="login.html" class="user-icon">
-                <img src="../img/Group 5.png" alt="User Icon"> GUEST
+                <img src="/static/img/Group 5.png" alt="User Icon"> GUEST
             </a>
             <a href="setting.html" class="menu-icon" style="text-decoration: none;">•••</a>
         </div>
 
 
         <div class="map-container">
-            <img src="map-placeholder.png" alt="Map of Thailand">
+            <div id="map"></div>
         </div>
 
 
         <a href="station-list.html" class="booking-btn">
-            <img src="../img/Sedan.png" alt="Car Icon"><h2>Booking</h2>
+            <img src="../static/img/Sedan.png" alt="Car Icon"><h2>Booking</h2>
         </a>
 
 
         <div class="sub-buttons">
             <a href="Booking list.html" style="text-decoration: none;"class="sub-button">
-                <img src="../img/Car.png" alt="Booking List Icon">
+                <img src="../static/img/Car.png" alt="Booking List Icon">
                 <h2>Booking list</h2>
             </a>
             <a href="result.html" style="text-decoration: none;"class="sub-button">
-                <img src="../img/Delivery Time.png" alt="Result Icon">
+                <img src="../static/img/Delivery Time.png" alt="Result Icon">
                 <h2>result</h2>
             </a>
         </div>
     </div>
 </body>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // ฟังก์ชันสำหรับการโหลดแผนที่
+    function loadMap(lat, lng) {
+        var map = L.map('map').setView([lat, lng], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        var userMarker = L.marker([lat, lng]).addTo(map);
+        userMarker.bindPopup("คุณอยู่ที่นี่").openPopup();  // แสดง popup เมื่อคลิกที่ marker
+        return map;
+    }
+    // ฟังก์ชันสำหรับการขอพิกัดของผู้ใช้
+    function requestUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                loadMap(lat, lng);  // เปลี่ยนจาก initializeMap เป็น loadMap
+            }, function() {
+                // ถ้าไม่สามารถขอพิกัดได้ ให้ใช้พิกัดกรุงเทพ
+                loadMap(13.7563, 100.5018);  // เปลี่ยนจาก initializeMap เป็น loadMap
+            });
+        } else {
+            // ถ้าเบราว์เซอร์ไม่รองรับ geolocation
+            loadMap(13.7563, 100.5018);  // เปลี่ยนจาก initializeMap เป็น loadMap
+        }
+
+    }
+    requestUserLocation();
+</script>
 </html>

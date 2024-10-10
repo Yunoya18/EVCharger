@@ -1,0 +1,134 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, white 60%, #FFA500 100%);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    overflow-y: hidden; /* ซ่อนการเลื่อนของ body */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    height: 90vh;
+    overflow-y: scroll; /* ให้แถบเลื่อนแสดง */
+    padding: 10px;
+    box-sizing: border-box;
+    scrollbar-width: thin; /* ทำให้แถบเลื่อนบาง */
+    scrollbar-color: gray white; /* สีแถบเลื่อนเป็นสีเทาและพื้นหลังเป็นสีขาว */
+}
+
+.container::-webkit-scrollbar {
+    width: 12px; /* ขนาดแถบเลื่อน */
+}
+
+.container::-webkit-scrollbar-thumb {
+    background-color: gray; /* สีแถบเลื่อนเป็นสีเทา */
+    border-radius: 10px; /* ทำให้แถบเลื่อนโค้งมน */
+}
+
+.container::-webkit-scrollbar-track {
+    background-color: white; /* พื้นหลังแถบเลื่อนเป็นสีขาว */
+}
+
+.station-card {
+    display: flex;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.left-side {
+    width: 40%;
+    background-color: #FFA500;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 20px;
+}
+
+.station-icon {
+    width: 90px;
+    height: 90px;
+}
+
+.right-side {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+.station-name {
+    font-family: 'Krona One', sans-serif;
+    font-size: 1.1em;
+    text-align: left;
+    margin-top: 0;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: center;
+    text-decoration: none;
+}
+.buttons a{
+    text-decoration: none;
+}
+.status-btn {
+    font-family: 'Inter', sans-serif;
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1em;
+    color: white;
+    align-self: center;
+}
+
+.ready {
+    background-color: #4CAF50;
+}
+
+.waiting {
+    background-color: #FFA500;
+}
+
+.cancel {
+    background-color: #FF5733;
+}
+
+.back-arrow {
+    width: 45px;
+    height: 45px;
+    background-color: #FFA500;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-150px);
+    cursor: pointer;
+}
+
+.back-arrow svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+}

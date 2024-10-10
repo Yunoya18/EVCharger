@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Status</title>
+    <link rel="stylesheet" href="Booking list2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Krona+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+            .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .popup h2 {
+            margin: 0 0 15px;
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .popup-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            background-color: #FF7D00;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #ccc;
+        }
+
+    </style>
+    <div class="container">
+        <div class="station-card">
+            <div class="left-side">
+                <img src="../img/Car Top View.png" alt="Car Icon" class="station-icon">
+            </div>
+            <div class="right-side">
+                <div class="station-name">Ladkrabang Station</div>
+                <div class="buttons">
+                    <a href="use-case.html" class="status-btn ready">ready</a>
+                    <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="station-card">
+            <div class="left-side">
+                <img src="../img/Car Top View.png" alt="Car Icon" class="station-icon">
+            </div>
+            <div class="right-side">
+                <div class="station-name">Ladkrabang Station</div>
+                <div class="buttons">
+                    <a href="station.html" class="status-btn waiting">waiting</a>
+                    <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+                </div>
+            </div>
+        </div>
+        <a href="Customer-main.html" class="back-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </a>
+    </div>
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup">
+            <h2>Confirm Cancellation</h2>
+            <p>Are you sure you want to cancel this booking?</p>
+            <div class="popup-buttons">
+                <button class="confirm-btn" onclick="confirmCancel()">Confirm</button>
+                <button class="cancel-btn" onclick="closePopup()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+        let stationToDelete = null;
+
+function showPopup(stationId) {
+    stationToDelete = stationId;
+    document.getElementById("popup-overlay").style.display = "flex";
+}
+
+
+function closePopup() {
+    document.getElementById("popup-overlay").style.display = "none";
+}
+
+
+function confirmCancel() {
+    if (stationToDelete) {
+        document.getElementById(stationToDelete).remove(); 
+        closePopup(); 
+        alert("Booking cancelled successfully!"); 
+    }
+}
+</script>
+</html>
