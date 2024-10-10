@@ -225,22 +225,35 @@ class Main_page:
         self.__templates = Jinja2Templates(directory="templates")
         self.__app.mount("/static", StaticFiles(directory="static"), name="static")
         self.__booking_station_list_page = Booking_Station_list_page()
+        self.__setting_page = Setting_page()
+        self.__profile_page = Profile_page()
+        self.__booking_list_page = Booking_List_page()
         self.setup_routes()
         self.include_routers()
 
     def setup_routes(self):
         @self.__app.get("/", response_class=HTMLResponse)
         async def showmain_page(request: Request):
-            # ส่งข้อมูลผู้ใช้ไปยัง template
-            return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": self.__user})
+            return self.__templates.TemplateResponse("Customer-main.html", {"request": request,})
 
         @self.__app.post("/booking", response_class=HTMLResponse)
         async def toBooking_Station_list_page(request: Request):
             return RedirectResponse(url="/booking", status_code=303)
 
+        @self.__app.post("/setting", response_class=HTMLResponse)
+        async def toSetting_page(request: Request):
+            return RedirectResponse(url="/setting", status_code=303)
+
+        @self.__app.post("/booking_list", response_class=HTMLResponse)
+        async def toBookingActive(request: Request):
+            return RedirectResponse(url="/booking_list", status_code=303)
+
     def include_routers(self):
         # รวม APIRouter จากคลาสอื่นๆ
         self.__app.include_router(self.__booking_station_list_page.get_router())
+        self.__app.include_router(self.__setting_page.get_router())
+        self.__app.include_router(self.__profile_page.get_router())
+        self.__app.include_router(self.__booking_list_page.get_router())
 
     def get_app(self):
         return self.__app
@@ -254,11 +267,64 @@ class Booking_Station_list_page:
 
     def setup_routes(self):
         @self.__router.get("/booking", response_class=HTMLResponse)
-        async def toBooking_Station_list_page(request: Request):
-            # ส่งข้อมูลผู้ใช้ไปยัง template
+        async def showBooking_Station_list_page(request: Request):
             return self.__templates.TemplateResponse("station-list.html", {"request": request})
+
+        @self.__router.post("/", response_class=HTMLResponse)
+        async def tomain_page(request: Request):
+            return RedirectResponse(url="/", status_code=303)
 
     def get_router(self):
         return self.__router
+
+# Class Setting_page
+class Setting_page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.__router.get("/setting", response_class=HTMLResponse)
+        async def showSetting_page(request: Request):
+            return self.__templates.TemplateResponse("setting.html", {"request": request})
+        
+        @self.__router.post("/profile", response_class=HTMLResponse)
+        async def toProfile_page(request: Request):
+            return RedirectResponse(url="/profile", status_code=303)
+
+    def get_router(self):
+        return self.__router
+
+# Class Profile_page
+class Profile_page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.__router.get("/profile", response_class=HTMLResponse)
+        async def showProfile_page(request: Request):
+            return self.__templates.TemplateResponse("profile.html", {"request": request})
+
+    def get_router(self):
+        return self.__router
+
+# Class Booking_List_page
+class Booking_List_page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.__router.get("/booking_list", response_class=HTMLResponse)
+        async def showBookingActive(request: Request):
+            return self.__templates.TemplateResponse("Booking_list.html", {"request": request})
+
+    def get_router(self):
+        return self.__router
+
 m = Main_page()
 app = m.get_app()

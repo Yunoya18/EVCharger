@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Setting</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-    <script src="./theme.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -17,11 +16,13 @@
   <body>
     <div class="bg-orange-400 h-[130px] md:h-14">
       <div class="flex flex-row text-white w-full h-full">
-        <a href="Customer-main.html">
+        <form action="/" method="post">
+        <button>
           <div class="py-3 md:py-2 pl-3">
             <i class="fa-solid fa-chevron-left text-4xl"></i>
           </div>
-        </a>
+        </button>
+      </form>
         <div class="mt-auto md:mt-3 flex flex-col md:flex-row">
           <h2 class="px-4 text-3xl">GUEST</h2>
           <div class="flex flex-row gap-4 py-2">
@@ -51,7 +52,9 @@
             <a href="#"> Payment </a>
           </li>
           <li class="py-2 pl-20 text-xl">
-            <a href="profile.html"> Edit Profile </a>
+            <form action="/profile" method="post">
+            <button> Edit Profile </button>
+            </form>
           </li>
           <li class="py-2 pl-20 text-xl">
             <a href="#"> Your Car </a>
@@ -71,6 +74,5 @@
       </div>
     </div>
     <!-- <h1 class="text-3xl font-bold underline text-clifford">Hello world!</h1> -->
-    <script src="./script.js"></script>
   </body>
 </html>

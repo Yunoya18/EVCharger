@@ -149,7 +149,9 @@
             <a href="login.html" class="user-icon">
                 <img src="/static/img/Group 5.png" alt="User Icon"> GUEST
             </a>
-            <a href="setting.html" class="menu-icon" style="text-decoration: none;">•••</a>
+            <form action="/setting" method="post">
+                <button class="menu-icon" style="text-decoration: none;">•••</button>
+            </form>
         </div>
 
 
@@ -167,10 +169,12 @@
 
 
         <div class="sub-buttons">
-            <a href="Booking list.html" style="text-decoration: none;"class="sub-button">
+            <form action="/booking_list" method="post">
+            <button style="text-decoration: none;"class="sub-button">
                 <img src="../static/img/Car.png" alt="Booking List Icon">
                 <h2>Booking list</h2>
-            </a>
+            </button>
+            </form>
             <a href="result.html" style="text-decoration: none;"class="sub-button">
                 <img src="../static/img/Delivery Time.png" alt="Result Icon">
                 <h2>result</h2>
