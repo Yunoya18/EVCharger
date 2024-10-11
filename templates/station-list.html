@@ -54,6 +54,9 @@
         }
 
         .container {
+            background-color: aqua;
+            width: 100px;
+            height: 100;
             padding: 20px;
             margin-top: 70px; 
             height: auto; 
@@ -86,10 +89,16 @@
             <button>Filter</button>
         </div>
     </div>
-
-    <div class="container">
-
-    </div>
-
+    {% if all_station %}
+        {% for station in all_station %}
+            <div class="container">
+                <a href="/booking/station/{{ station.get_station_id() }}">
+                    {{ station.get_station_name() }} - {{ station.get_status() }} - {{ station.get_price_per_hour() }}
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No stations available.</p>
+    {% endif %}
 </body>
 </html>

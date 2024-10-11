@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 
+
 class Database:
     def __init__(self):
         self.host = "sql12.freesqldatabase.com"
@@ -61,4 +62,27 @@ class Database:
             return None
         finally:
             cursor.close()
-
+    def getALLStation(self):
+        from User_Package import Station
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM ev_stations"
+            cursor.execute(query)
+            allstation = cursor.fetchall()
+            query = "SELECT * FROM locations"
+            cursor.execute(query)
+            location = cursor.fetchall()
+            location_dict = {item[0]: (float(item[1]), float(item[1])) for item in location}
+            list_allstaion = []
+            for data in allstation:
+                address = location_dict.get(data[1], "No location")
+                station = Station(data[1],address[0],address[1],data[0],data[2],data[3],float(data[4]))
+                list_allstaion.append(station)
+            return list_allstaion
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()

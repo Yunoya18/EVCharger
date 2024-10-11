@@ -129,13 +129,13 @@
 <body>
 
     <div class="header">
-        <a href="station-list.html" class="back-btn" style="text-decoration: none;">&#8249;</a>
+        <a href="/booking" class="back-btn" style="text-decoration: none;">&#8249;</a>
         <h1>รอจินจา</h1>
     </div>
 
     <div class="container">
         <div style="background-color: white; height: 40vh; margin-bottom: 20px;">
-            <img class="station-image" src="station-image.jpg" alt="รอรูปจากจินจา">
+            <img class="station-image" src="../static/img/station-image.jpg" alt="รอรูปจากจินจา">
         </div>
         <hr class="sepimg">
         <div class="station-info">
@@ -148,8 +148,9 @@
         <label for="booking-date">เลือกวันที่:</label>
         <input type="date" id="booking-date" name="booking-date" min="2024-10-09">
         <label for="booking-time">เลือกเวลา:</label>
-        <input type="time" id="booking-time" name="booking-time">
-    
+        <input type="time" id="booking-time-start" name="booking-time">
+        <label for="booking-time">เลือกเวลา:</label>
+        <input type="time" id="booking-time-end" name="booking-time">
     </div>
     <div class="foot">
         <div class="booking-btn-container">
@@ -159,12 +160,27 @@
    
 
 </body>
-<script>document.getElementById("booking-date").addEventListener("change", function() {
+<script>
+document.getElementById("booking-date").addEventListener("change", function() {
     const selectedDate = new Date(this.value);
     const today = new Date();
     if (selectedDate < today) {
         alert("เลือกทำเตี่ยไร");
         this.value = "";
+    }
+});
+document.getElementById("booking-time-start").addEventListener("change", function() {
+    let timeValue = this.value;
+    if (timeValue) {
+        let hours = timeValue.split(":")[0]; // ดึงค่าชั่วโมง
+        this.value = hours + ":00"; // รีเซ็ตค่านาทีเป็น 00
+    }
+});
+document.getElementById("booking-time-end").addEventListener("change", function() {
+    let timeValue = this.value;
+    if (timeValue) {
+        let hours = timeValue.split(":")[0]; // ดึงค่าชั่วโมง
+        this.value = hours + ":00"; // รีเซ็ตค่านาทีเป็น 00
     }
 });
 </script>

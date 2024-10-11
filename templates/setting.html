@@ -18,7 +18,11 @@
       <div class="flex flex-row text-white w-full h-full">
         <a href="/">&#8249;</a>
         <div class="mt-auto md:mt-3 flex flex-col md:flex-row">
-          <h2 class="px-4 text-3xl">GUEST</h2>
+          {% if user%}
+          <h2 class="px-4 text-3xl">{{ user }}</h2>
+          {% else %}
+          <h2 class="px-4 text-3xl">Guest</h2>
+          {% endif %}
           <div class="flex flex-row gap-4 py-2">
             <div>
               <i class="fa-solid fa-user"></i>
@@ -46,9 +50,7 @@
             <a href="#"> Payment </a>
           </li>
           <li class="py-2 pl-20 text-xl">
-            <form action="/profile" method="post">
-            <button> Edit Profile </button>
-            </form>
+            <a href="/profile"> Edit Profile </a>
           </li>
           <li class="py-2 pl-20 text-xl">
             <a href="#"> Your Car </a>
@@ -62,7 +64,10 @@
             <a href="#"> Language </a>
           </li>
           <li class="py-2 pl-20 text-xl">
-            <a href="#"> Logout </a>
+            <form action="/logout" method="post">
+              <button > Logout </button>
+            </form>
+            
           </li>
         </ul>
       </div>

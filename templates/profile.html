@@ -15,21 +15,20 @@
     />
   </head>
   <body>
+    <form action="/profile" method="post">
     <div class="w-screen h-screen flex flex-col">
       <!-- picture -->
       <div class="bg-orange-400 h-[250px] md:h-[200px] flex">
         <div>
           <div class="py-3 pl-3 cursor-pointer">
-            <form action="/setting" method="post">
-            <button class="fa-solid fa-chevron-left text-4xl"></button>
-            </form>
+            <a href="/setting" class="fa-solid fa-chevron-left text-4xl"></a>
           </div>
         </div>
         <div class="mt-auto flex-auto mb-4">
           <div class="flex justify-center">
             <div class="relative cursor-pointer" onclick="changePicture(this)">
               <img
-                src="../img/Group 20.png"
+                src="../static/img/Group 20.png"
                 class="rounded-full w-[113px] h-[113px] bg-center"
                 id="image"
                 alt=""
@@ -68,7 +67,7 @@
         </div>
         <!-- form -->
         <!-- action="" method="post" -->
-        <form class="h-full flex flex-col pb-10" id="profile-form">
+        <!-- <form class="h-full flex flex-col pb-10" id="profile-form"> -->
           <input class="hidden" type="file" name="picture" id="picture" />
           <!-- content form  -->
           <div class="flex flex-col px-14 gap-y-6">
@@ -124,5 +123,22 @@
       </div>
     </div>
     <!-- <script src="./script.js"></script> -->
+    <script>
+      function changePicture(element) {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.onchange = (event) => {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                  const img = element.querySelector('#image');
+                  img.src = e.target.result;
+              };
+              reader.readAsDataURL(file);
+          };
+          input.click();
+      }
+  </script>
   </body>
 </html>

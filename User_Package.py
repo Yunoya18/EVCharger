@@ -10,20 +10,19 @@ from fastapi.responses import RedirectResponse
 
 # Class User
 class User:
-    def __init__(self, user_id, email, password, firstname, surname, phone, profile, status):
+    def __init__(self, user_id, username, email, password, firstname, surname, phone, profile, status):
         self.__user_id = user_id
+        self.__username = username
         self.__email = email
         self.__password = password
         self.__firstname = firstname
-        self.__surname = surname
-        self.__phone = phone
-        self.__profile = profile
-        self.__status = status
-
     # Getter methods
     def get_user_id(self):
         return self.__user_id
-
+    
+    def get_username(self):
+        return self.__username
+    
     def get_email(self):
         return self.__email
 
@@ -46,6 +45,9 @@ class User:
         return self.__status
 
     # Setter methods
+    def set_username(self, username):
+        self.__username = username
+        
     def set_email(self, email):
         self.__email = email
 
@@ -69,24 +71,32 @@ class User:
 
 # Class Location
 class Location:
-    def __init__(self, location_id, address):
+    def __init__(self, location_id, lat, lng):
         self.__location_id = location_id
-        self.__address = address
+        self.__lat = lat
+        self.__lng = lng
 
     # Getter methods
     def get_location_id(self):
         return self.__location_id
 
-    def get_address(self):
-        return self.__address
+    def get_lat(self):
+        return self.__lat
+    
+    def get_lng(self):
+        return self.__lng
 
     # Setter methods
-    def set_address(self, address):
-        self.__address = address
+    def set_lat(self, lat):
+        self.__lat = lat
+    
+    def set_lng(self, lng):
+        self.__lng = lng
+
 # Class Station
 class Station(Location):
-    def __init__(self, location_id, address, station_id, station_name, status, price_per_hour):
-        super().__init__(location_id, address)
+    def __init__(self, location_id, lat, lng, station_id, station_name, status, price_per_hour):
+        super().__init__(location_id, lat, lng)
         self.__station_id = station_id
         self.__station_name = station_name
         self.__status = status
@@ -121,7 +131,9 @@ class All_Station:
         self.__station_list = self.getAllStation()
     
     def getAllStation(self):
-        return [1,2,3] #เชื่อมดาต้าเบส
+        database = Database()
+        station = database.getALLStation()
+        return station
     
     # Getter methods
     def get_station_list(self):
@@ -261,6 +273,7 @@ class Main_page:
         self.__profile_page = Profile_page()
         self.__bookinglist_page = Booking_List_page()
         self.__result_page = Result()
+        self.__booking_station_page = Booking_Station_page()
 
         self.__app.add_middleware(AuthMiddleware)
 
@@ -289,6 +302,7 @@ class Main_page:
         self.__app.include_router(self.__setting_page.get_router())
         self.__app.include_router(self.__bookinglist_page.get_router())
         self.__app.include_router(self.__result_page.get_router())
+        self.__app.include_router(self.__booking_station_page.get_router())
 
     def get_app(self):
         return self.__app
@@ -298,13 +312,28 @@ class Booking_Station_list_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__all_station = All_Station()
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/booking", response_class=HTMLResponse)
         async def toBooking_Station_list_page(request: Request):
-            # ส่งข้อมูลผู้ใช้ไปยัง template
-            return self.__templates.TemplateResponse("station-list.html", {"request": request})
+            return self.__templates.TemplateResponse("station-list.html", {"request": request, "all_station":self.__all_station.get_station_list()})
+
+    def get_router(self):
+        return self.__router
+
+# Class Booking_Station_page
+class Booking_Station_page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+
+    def setup_routes(self):
+        @self.__router.get("/booking/station/{station_id}", response_class=HTMLResponse)
+        async def toBooking_Station_page(request: Request, station_id: int):
+            return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id})
 
     def get_router(self):
         return self.__router
@@ -390,7 +419,8 @@ class Setting_page:
     def setup_routes(self):
         @self.__router.get("/setting", response_class=HTMLResponse)
         async def showSetting_page(request: Request):
-            return self.__templates.TemplateResponse("setting.html", {"request": request})
+            username = request.cookies.get("username")
+            return self.__templates.TemplateResponse("setting.html", {"request": request, "user": username})
 
     def get_router(self):
         return self.__router
@@ -404,6 +434,11 @@ class Profile_page:
     def setup_routes(self):
         @self.__router.get("/profile", response_class=HTMLResponse)
         async def showProfile_page(request: Request):
+            return self.__templates.TemplateResponse("profile.html", {"request": request})
+        
+        @self.__router.post("/profile", response_class=HTMLResponse)
+        async def edit_profile(request: Request):
+            print("dddd")
             return self.__templates.TemplateResponse("profile.html", {"request": request})
 
     def get_router(self):
