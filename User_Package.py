@@ -6,7 +6,9 @@ from fastapi.exceptions import HTTPException
 from DatabaseConnection import Database
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import RedirectResponse
+from datetime import datetime
 import base64
+
 
 
 # Class User
@@ -339,12 +341,39 @@ class Booking_Station_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__date = datetime.now().date()
+        self.__database = Database()
+        self.__today = f"{self.__date.year}-{self.__date.month}-{self.__date.day}"
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/booking/station/{station_id}", response_class=HTMLResponse)
         async def toBooking_Station_page(request: Request, station_id: int):
-            return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id})
+            
+            return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id, "today":self.__today})
+        
+        @self.__router.post("/booking/station/{station_id}", response_class=HTMLResponse)
+        async def createBooking(request: Request, 
+            station_id: int,
+            booking_date: str = Form(...),
+            booking_time_start: str = Form(...),
+            booking_time_end: str = Form(...)
+        ):
+            user_id = request.cookies.get("user_id")
+            booking_same = self.__database.getbooking_same(booking_date,booking_time_start,booking_time_end)
+            if (booking_same):
+                return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id, "today":self.__today, "error":"วันและเวลามีผู้อื่นจองแล้ว"})
+            else:
+                code = self.createCode()
+                self.__database.CreateBooking(user_id,station_id,booking_time_start,booking_time_end,booking_date,code,status="pending")
+                return RedirectResponse(url="/booking", status_code=303)
+
+    def createCode(self):
+        import random
+        import string
+        characters = string.ascii_letters
+        code = ''.join(random.choice(characters) for _ in range(6))
+        return code
 
     def get_router(self):
         return self.__router
@@ -451,10 +480,10 @@ class Profile_page:
         async def showProfile_page(request: Request):
             user_id = request.cookies.get("user_id")
             user = self.__database.getUserInfo(user_id)
-            try:
+            if (user.get_profile()):
                 profile_picture_data = base64.b64encode(user.get_profile()).decode("utf-8")
                 profile_picture_url = f"data:image/jpeg;base64,{profile_picture_data}"
-            except:
+            else:
                 profile_picture_url = None
             return self.__templates.TemplateResponse("profile.html", {"request": request, "pic":profile_picture_url,"user":user})
         
@@ -467,12 +496,22 @@ class Profile_page:
             phone: str = Form(...),
             fileInput: UploadFile = File(...)
         ):
-            full_name = full_name.split()
-            firstname = full_name[0]
-            surname = full_name[1]
+            if (full_name.split()):
+                full_name = full_name.split()
+                firstname = full_name[0]
+                surname = full_name[1]
+            else:
+                firstname = None
+                surname = None
             user_id = request.cookies.get("user_id")
-            hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
-            picture_data = await fileInput.read()
+            if (password):
+                hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            else:
+                hash_password = None
+            if (fileInput):
+                picture_data = await fileInput.read()
+            else:
+                picture_data = None
             self.__database.editProfileDB(user_id,email,firstname,surname,hash_password,phone,picture_data)
             return RedirectResponse(url="/profile", status_code=303)
 

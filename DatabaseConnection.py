@@ -93,10 +93,32 @@ class Database:
         
         try:
             cursor = self.connection.cursor()
-            query = "UPDATE user SET firstname = %s, surname = %s, password = %s,email = %s, phone = %s, profile = %s WHERE user_id = %s;"
-            cursor.execute(query, (firstname,surname,hash_password,email,phone,picture_data,user_id,))
-            self.connection.commit()
-            return 0
+            print(bool(user_id),bool(email),bool(firstname),bool(surname),bool(hash_password),bool(phone),bool(picture_data))
+            if (firstname):
+                query = "UPDATE user SET firstname = %s WHERE user_id = %s;"
+                cursor.execute(query, (firstname,user_id,))
+                self.connection.commit()
+            if (surname):
+                query = "UPDATE user SET surname = %s WHERE user_id = %s;"
+                cursor.execute(query, (surname,user_id,))
+                self.connection.commit()
+            if (hash_password):
+                query = "UPDATE user SET password = %s WHERE user_id = %s;"
+                cursor.execute(query, (hash_password,user_id,))
+                self.connection.commit()
+            if (email):
+                query = "UPDATE user SET email = %s WHERE user_id = %s;"
+                cursor.execute(query, (email,user_id,))
+                self.connection.commit()
+            if (phone):
+                query = "UPDATE user SET phone = %s WHERE user_id = %s;"
+                cursor.execute(query, (phone,user_id,))
+                self.connection.commit()
+            if (picture_data):
+                query = "UPDATE user SET profile = %s WHERE user_id = %s;"
+                cursor.execute(query, (picture_data,user_id,))
+                self.connection.commit()
+
         except Error as err:
             print(f"Error: {err}")
             return None
@@ -114,6 +136,36 @@ class Database:
             data_user = cursor.fetchone()
             user = User(*data_user)
             return user
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+
+    def getbooking_same(self,booking_date,booking_time_start,booking_time_end):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM history WHERE booking_date = %s AND (start_time = %s OR end_time = %s) AND status NOT IN ('completed','canceled') "
+            cursor.execute(query, (booking_date,booking_time_start,booking_time_end,))
+            databooking = cursor.fetchone()
+            return databooking
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+    
+    def CreateBooking(self,user_id,station_id,booking_time_start,booking_time_end,booking_date,code,status="pending"):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "INSERT INTO history (user_id,station_id,start_time,end_time,booking_date,codebooking,status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, (user_id,station_id,booking_time_start,booking_time_end,booking_date,code,status,))
+            self.connection.commit()
+            print("INSERT history")
         except Error as err:
             print(f"Error: {err}")
             return None

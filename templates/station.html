@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Station Booking</title>
+    <script>
+        function validateBooking(event) {
+            const errorMessage = "{{ error | default('') }}";
+            
+            if (errorMessage) {
+                alert(errorMessage);
+                event.preventDefault();
+                return;
+            }
+        }
+    </script>
     <style>
         body {
             margin: 0;
@@ -127,12 +138,11 @@
     </style>
 </head>
 <body>
-
     <div class="header">
         <a href="/booking" class="back-btn" style="text-decoration: none;">&#8249;</a>
         <h1>รอจินจา</h1>
     </div>
-
+    <form id="booking-form" action="/booking/station/{{station_id}}" method="post">
     <div class="container">
         <div style="background-color: white; height: 40vh; margin-bottom: 20px;">
             <img class="station-image" src="../static/img/station-image.jpg" alt="รอรูปจากจินจา">
@@ -146,42 +156,80 @@
     <div class="time-select">
         <h3>เลือกวัน เดือน ปี และเวลาในการจอง</h3>
         <label for="booking-date">เลือกวันที่:</label>
-        <input type="date" id="booking-date" name="booking-date" min="2024-10-09">
+        <input type="date" id="booking-date" name="booking_date" min="{{ today }}">
         <label for="booking-time">เลือกเวลา:</label>
-        <input type="time" id="booking-time-start" name="booking-time">
+        <input type="time" id="booking-time-start" name="booking_time_start">
         <label for="booking-time">เลือกเวลา:</label>
-        <input type="time" id="booking-time-end" name="booking-time">
+        <input type="time" id="booking-time-end" name="booking_time_end">
     </div>
     <div class="foot">
         <div class="booking-btn-container">
             <button class="booking-btn">Booking</button>
         </div>
     </div>
-   
-
+</form>
 </body>
 <script>
-document.getElementById("booking-date").addEventListener("change", function() {
-    const selectedDate = new Date(this.value);
+document.getElementById("booking-form").addEventListener("submit", function(event) {
+    const bookingDate = document.getElementById("booking-date").value;
+    const bookingTimeStart = document.getElementById("booking-time-start").value;
+    const bookingTimeEnd = document.getElementById("booking-time-end").value;
+
+    if (!bookingDate) {
+        alert("กรุณาเลือกวันที่ในการจอง");
+        event.preventDefault();
+        return;
+    }
+
+    if (!bookingTimeStart || !bookingTimeEnd) {
+        alert("กรุณาเลือกเวลาเริ่มต้นและเวลาสิ้นสุด");
+        event.preventDefault();
+        return;
+    }
+
+    const selectedDate = new Date(bookingDate);
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // ตั้งค่าเวลาให้เป็นเที่ยงคืนของวันนี้
+
     if (selectedDate < today) {
-        alert("เลือกทำเตี่ยไร");
-        this.value = "";
+        alert("วันที่ไม่สามารถเป็นวันก่อนหน้าได้");
+        event.preventDefault();
+        return;
+    }
+
+    if (bookingTimeEnd <= bookingTimeStart) {
+        alert("เวลาเริ่มต้นต้องน้อยกว่าเวลาสิ้นสุด");
+        event.preventDefault();
+        return;
+    }
+
+    // แปลงเวลาที่ผู้ใช้เลือกเป็นมิลลิวินาที
+    const startTime = new Date(`1970-01-01T${bookingTimeStart}:00`).getTime();
+    const endTime = new Date(`1970-01-01T${bookingTimeEnd}:00`).getTime();
+
+    // คำนวณส่วนต่างของเวลาที่เลือกในหน่วยชั่วโมง
+    const timeDifference = (endTime - startTime) / (1000 * 60 * 60); // แปลงเป็นชั่วโมง
+
+    if (timeDifference > 2) {
+        alert("ใช้บริการได้มากสุด 2 ชั่วโมงต่อ 1 การจอง");
+        event.preventDefault();
+        return;
     }
 });
-document.getElementById("booking-time-start").addEventListener("change", function() {
-    let timeValue = this.value;
-    if (timeValue) {
-        let hours = timeValue.split(":")[0]; // ดึงค่าชั่วโมง
-        this.value = hours + ":00"; // รีเซ็ตค่านาทีเป็น 00
-    }
-});
-document.getElementById("booking-time-end").addEventListener("change", function() {
-    let timeValue = this.value;
-    if (timeValue) {
-        let hours = timeValue.split(":")[0]; // ดึงค่าชั่วโมง
-        this.value = hours + ":00"; // รีเซ็ตค่านาทีเป็น 00
-    }
-});
+
+    document.getElementById("booking-time-start").addEventListener("change", function() {
+        let timeValue = this.value;
+        if (timeValue) {
+            let hours = timeValue.split(":")[0]; // ดึงค่าชั่วโมง
+            this.value = hours + ":00"; // รีเซ็ตค่านาทีเป็น 00
+        }
+    });
+    document.getElementById("booking-time-end").addEventListener("change", function() {
+        let timeValue = this.value;
+        if (timeValue) {
+            let hours = timeValue.split(":")[0]; // ดึงค่าชั่วโมง
+            this.value = hours + ":00"; // รีเซ็ตค่านาทีเป็น 00
+        }
+    });
 </script>
 </html>
