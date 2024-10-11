@@ -451,8 +451,11 @@ class Profile_page:
         async def showProfile_page(request: Request):
             user_id = request.cookies.get("user_id")
             user = self.__database.getUserInfo(user_id)
-            profile_picture_data = base64.b64encode(user.get_profile()).decode("utf-8")
-            profile_picture_url = f"data:image/jpeg;base64,{profile_picture_data}"
+            try:
+                profile_picture_data = base64.b64encode(user.get_profile()).decode("utf-8")
+                profile_picture_url = f"data:image/jpeg;base64,{profile_picture_data}"
+            except:
+                profile_picture_url = None
             return self.__templates.TemplateResponse("profile.html", {"request": request, "pic":profile_picture_url,"user":user})
         
         @self.__router.post("/profile", response_class=HTMLResponse)
