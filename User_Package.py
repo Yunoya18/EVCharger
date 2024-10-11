@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, APIRouter, Form, Depends, UploadFile, File
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import HTTPException
 from DatabaseConnection import Database
@@ -350,6 +350,9 @@ class Booking_Station_list_page:
     def setup_routes(self):
         @self.__router.get("/booking", response_class=HTMLResponse)
         async def toBooking_Station_list_page(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("station-list.html", {"request": request, "all_station":self.__all_station.get_station_list()})
 
     def get_router(self):
@@ -368,6 +371,9 @@ class Booking_Station_page:
     def setup_routes(self):
         @self.__router.get("/booking/station/{station_id}", response_class=HTMLResponse)
         async def toBooking_Station_page(request: Request, station_id: int):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id, "today":self.__today})
         
         @self.__router.post("/booking/station/{station_id}", response_class=HTMLResponse)
@@ -421,7 +427,7 @@ class Login_Page:
                 response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
                 return response
             else:
-                return {"message": "Invalid username or password."}  # Handle login failure
+                return JSONResponse(status_code=400, content={"message": "Invalid username or password."})
 
         @self.__router.post("/logout")
         async def logout_user(request: Request):
@@ -461,9 +467,9 @@ class Register_Page:
                 if success:
                     return RedirectResponse(url="/login", status_code=303)  # Redirect on success
                 else:
-                    return {"message": "Registration failed. User might already exist."}  # Handle error
+                    return JSONResponse(status_code=400, content={"message": "Registration failed. User might already exist."})
             else:
-                return {"message": "Password mai thong gan a pai sai ma mai naaaaa"}
+                return JSONResponse(status_code=400, content={"message": "Passwords do not match. Please try again."})
 
     def get_router(self):
         return self.__router
@@ -479,6 +485,8 @@ class Setting_page:
         @self.__router.get("/setting", response_class=HTMLResponse)
         async def showSetting_page(request: Request):
             user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             user = self.__database.getUserInfo(user_id)
             return self.__templates.TemplateResponse("setting.html", {"request": request, "user": user.get_username()})
 
@@ -497,6 +505,8 @@ class Profile_page:
         @self.__router.get("/profile", response_class=HTMLResponse)
         async def showProfile_page(request: Request):
             user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             user = self.__database.getUserInfo(user_id)
             if (user.get_profile()):
                 profile_picture_data = base64.b64encode(user.get_profile()).decode("utf-8")
@@ -549,6 +559,8 @@ class Booking_List_page:
         @self.__router.get("/booking_list", response_class=HTMLResponse)
         async def showBookingActive(request: Request):
             user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             listshow = []
             allbooking = self.__history.getAllBooking(user_id)
             for booking in allbooking:
@@ -562,6 +574,9 @@ class Booking_List_page:
 
         @self.__router.get("/booking/edit/{booking_id}/{station_id}", response_class=HTMLResponse)
         async def EditBooking(request: Request, booking_id: int, station_id: int):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             booking = self.__database.getBooking(booking_id)
             return self.__templates.TemplateResponse("stationedit.html", {"request": request,"today":self.__timetoday[0],"booking":booking})
         
@@ -594,6 +609,9 @@ class Use_page:
     def setup_routes(self):
         @self.__router.get("/use", response_class=HTMLResponse)
         async def showUse(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("use-case.html", {"request": request})
     def get_router(self):
         return self.__router
@@ -607,6 +625,9 @@ class Result:
     def setup_routes(self):
         @self.__router.get("/result", response_class=HTMLResponse)
         async def showResult(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("result.html", {"request": request})
 
     def get_router(self):

@@ -14,7 +14,7 @@
         <a href="/">&#8249;</a>
     </div>
     <div class="info">
-        <form action="/login" method="post">
+        <form id="login-form" action="/login" method="post">
             <div class="log">
                 <label for="username">Username</label><br>
                 <input type="text" id="username" name="username" required><br>
@@ -34,7 +34,24 @@
             </button>
         </form>
     </div>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
+            const formData = new FormData(this);
 
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;  // Redirect
+            } else {
+                const data = await response.json();
+                alert(data.message);  // Show alert
+            }
+        });
+    </script>
 </body>
 </html>

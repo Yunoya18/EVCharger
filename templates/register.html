@@ -14,7 +14,7 @@
         <a href="/login">&#8249;</a>
     </div>
     <div class="info">
-        <form action="/register"  method="post">
+        <form id="register-form" action="/register"  method="post">
             <div class="log">
                 <label for="username">Username</label><br>
                 <input type="text" id="username" name="username" required><br>
@@ -28,6 +28,37 @@
             <button type="submit">Register</button>
         </form>
     </div>
+
+    <script>
+    document.getElementById('register-form').addEventListener('submit', async function(event) {
+        event.preventDefault();  // Prevent default form submission
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                body: formData,
+            });
+
+            // Check if the response is a redirect
+            if (response.redirected) {
+                window.location.href = response.url;  // Redirect on successful registration
+            } else {
+                // Handle JSON response for errors or other messages
+                const data = await response.json();
+                if (response.ok) {
+                    alert(data.message || "Registration successful!");  // Success alert
+                } else {
+                    alert(data.message || "Registration failed. Please try again.");  // Error alert
+                }
+            }
+        } catch (error) {
+            alert("An error occurred. Please try again later.");  // Catch fetch errors
+            console.error("Error during fetch: ", error);
+        }
+    });
+</script>
 
 </body>
 </html>
