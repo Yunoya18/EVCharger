@@ -176,14 +176,16 @@ class Payment:
 
 # Class Booking
 class Booking:
-    def __init__(self, booking_id, user, station, payment, start_time, end_time, status):
+    def __init__(self, booking_id, user, station, payment, start_time, end_time, booking_date, status, codebooking):
         self.__booking_id = booking_id
-        self.__user = user  # สมมติว่า user เป็นอ็อบเจกต์ของคลาส User
-        self.__station = station  # สมมติว่า station เป็นอ็อบเจกต์ของคลาส Station
+        self.__user = user
+        self.__station = station
         self.__payment = payment
         self.__start_time = start_time
         self.__end_time = end_time
         self.__status = status
+        self.__booking_date = booking_date
+        self.__codebooking = codebooking
 
     # Getter methods
     def get_booking_id(self):
@@ -199,13 +201,19 @@ class Booking:
         return self.__payment
 
     def get_start_time(self):
-        return self.__start_time
+        return str(self.__start_time)
 
     def get_end_time(self):
-        return self.__end_time
+        return str(self.__end_time)
 
     def get_status(self):
         return self.__status
+
+    def get_booking_date(self):
+        return str(self.__booking_date)
+
+    def get_codebooking(self):
+        return self.__codebooking
 
     # Setter methods
     def set_user(self, user):
@@ -226,13 +234,22 @@ class Booking:
     def set_status(self, status):
         self.__status = status
 
+    def set_booking_date(self, booking_date):
+        self.__booking_date = booking_date
+
+    def set_codebooking(self, codebooking):
+        self.__codebooking = codebooking
+
+
 #Class History
 class History:
-    def __init__(self):
-        self.__booking_list = self.getAllBooking()
+    def __init__(self,user_id=None):
+        self.__booking_list = self.getAllBooking(user_id)
     
-    def getAllBooking(self):
-        return ['book'] #เชื่อมดาต้าเบส
+    def getAllBooking(self,user_id=None):
+        database = Database()
+        list_booking = database.gethistory(user_id)
+        return list_booking
     
     # Getter methods
     def get_booking_list(self):
@@ -283,6 +300,7 @@ class Main_page:
         self.__bookinglist_page = Booking_List_page()
         self.__result_page = Result()
         self.__booking_station_page = Booking_Station_page()
+        self.__use_page = Use_page()
 
         self.__app.add_middleware(AuthMiddleware)
 
@@ -316,6 +334,7 @@ class Main_page:
         self.__app.include_router(self.__bookinglist_page.get_router())
         self.__app.include_router(self.__result_page.get_router())
         self.__app.include_router(self.__booking_station_page.get_router())
+        self.__app.include_router(self.__use_page.get_router())
 
     def get_app(self):
         return self.__app
@@ -349,7 +368,6 @@ class Booking_Station_page:
     def setup_routes(self):
         @self.__router.get("/booking/station/{station_id}", response_class=HTMLResponse)
         async def toBooking_Station_page(request: Request, station_id: int):
-            
             return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id, "today":self.__today})
         
         @self.__router.post("/booking/station/{station_id}", response_class=HTMLResponse)
@@ -360,7 +378,7 @@ class Booking_Station_page:
             booking_time_end: str = Form(...)
         ):
             user_id = request.cookies.get("user_id")
-            booking_same = self.__database.getbooking_same(booking_date,booking_time_start,booking_time_end)
+            booking_same = self.__database.getbooking_same(booking_date,booking_time_start,booking_time_end,station_id)
             if (booking_same):
                 return self.__templates.TemplateResponse("station.html", {"request": request, "station_id": station_id, "today":self.__today, "error":"วันและเวลามีผู้อื่นจองแล้ว"})
             else:
@@ -517,18 +535,66 @@ class Profile_page:
 
     def get_router(self):
         return self.__router
-    
+#Class Booking_List_page
 class Booking_List_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__timetoday = str(datetime.now()).split()
+        self.__history = History()
+        self.__database = Database()
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/booking_list", response_class=HTMLResponse)
         async def showBookingActive(request: Request):
-            return self.__templates.TemplateResponse("Booking_list.html", {"request": request})
+            user_id = request.cookies.get("user_id")
+            listshow = []
+            allbooking = self.__history.getAllBooking(user_id)
+            for booking in allbooking:
+                time1 = datetime.strptime(booking.get_start_time(), "%H:%M:%S").time()
+                time2 = datetime.strptime(self.__timetoday[1][:-7], "%H:%M:%S").time()
+                time3 = datetime.strptime(booking.get_end_time(), "%H:%M:%S").time()
+                result = time1 <= time2 <= time3
+                dateb = booking.get_booking_date() == self.__timetoday[0] and result
+                listshow.append(dateb)
+            return self.__templates.TemplateResponse("Booking_list.html", {"request": request, "allbooking":zip(allbooking,listshow)})
 
+        @self.__router.get("/booking/edit/{booking_id}/{station_id}", response_class=HTMLResponse)
+        async def EditBooking(request: Request, booking_id: int, station_id: int):
+            booking = self.__database.getBooking(booking_id)
+            return self.__templates.TemplateResponse("stationedit.html", {"request": request,"today":self.__timetoday[0],"booking":booking})
+        
+        @self.__router.post("/booking/edit/{booking_id}/{station_id}", response_class=HTMLResponse)
+        async def createBooking(request: Request, booking_id: int,
+            station_id: int,
+            booking_date: str = Form(...),
+            booking_time_start: str = Form(...),
+            booking_time_end: str = Form(...)
+        ):
+            user_id = request.cookies.get("user_id")
+            booking_same = self.__database.getbooking_same(booking_date,booking_time_start,booking_time_end,station_id)
+            booking = self.__database.getBooking(booking_id)
+            if (booking_same):
+                return self.__templates.TemplateResponse("stationedit.html", {"request": request,"today":self.__timetoday[0],"booking":booking})
+            else:
+                print(booking_date,booking_time_start,booking_time_end)
+                self.__database.UpdateBooking(booking_id,booking_time_start,booking_time_end,booking_date)
+                return RedirectResponse(url="/booking_list", status_code=303)
+        
+    def get_router(self):
+        return self.__router
+
+#Class Use_page
+class Use_page:
+    def __init__(self):
+        self.__router = APIRouter()
+        self.__templates = Jinja2Templates(directory="templates")
+        self.setup_routes()
+    def setup_routes(self):
+        @self.__router.get("/use", response_class=HTMLResponse)
+        async def showUse(request: Request):
+            return self.__templates.TemplateResponse("use-case.html", {"request": request})
     def get_router(self):
         return self.__router
 

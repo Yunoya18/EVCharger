@@ -60,31 +60,37 @@
 
     </style>
     <div class="container">
-        <div class="station-card">
-            <div class="left-side">
-                <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
-            </div>
-            <div class="right-side">
-                <div class="station-name">Ladkrabang Station</div>
-                <div class="buttons">
-                    <a href="use-case.html" class="status-btn ready">ready</a>
-                    <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+        {% for booking,show in allbooking %}
+            {%if show %}
+            <div class="station-card">
+                <div class="left-side">
+                    <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
+                </div>
+                <div class="right-side">
+                    <div class="station-name">Ladkrabang Station</div>
+                    <div class="buttons">
+                        <a href="/use" class="status-btn ready">ready</a>
+                        <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="station-card">
-            <div class="left-side">
-                <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
-            </div>
-            <div class="right-side">
-                <div class="station-name">Ladkrabang Station</div>
-                <div class="buttons">
-                    <a href="station.html" class="status-btn waiting">waiting</a>
-                    <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+            {% elif show == False and not booking.get_status() == "canceled"%}
+            <div class="station-card">
+                <div class="left-side">
+                    <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
+                </div>
+                <div class="right-side">
+                    <div class="station-name">Ladkrabang Station</div>
+                    <form action="/booking/edit/{{booking.get_booking_id()}}/{{booking.get_station()}}">
+                    <div class="buttons">
+                        <button class="status-btn waiting">Edit</button>
+                    </form>
+                        <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+                    </div>
                 </div>
             </div>
-        </div>
+            {% endif %}
+        {% endfor %}
         <a href="/">
             <button href="Customer-main.html" class="back-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

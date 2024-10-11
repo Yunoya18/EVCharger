@@ -93,7 +93,6 @@ class Database:
         
         try:
             cursor = self.connection.cursor()
-            print(bool(user_id),bool(email),bool(firstname),bool(surname),bool(hash_password),bool(phone),bool(picture_data))
             if (firstname):
                 query = "UPDATE user SET firstname = %s WHERE user_id = %s;"
                 cursor.execute(query, (firstname,user_id,))
@@ -142,13 +141,13 @@ class Database:
         finally:
             cursor.close()
 
-    def getbooking_same(self,booking_date,booking_time_start,booking_time_end):
+    def getbooking_same(self,booking_date,booking_time_start,booking_time_end,station_id):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            query = "SELECT * FROM history WHERE booking_date = %s AND (start_time = %s OR end_time = %s) AND status NOT IN ('completed','canceled') "
-            cursor.execute(query, (booking_date,booking_time_start,booking_time_end,))
+            query = "SELECT * FROM history WHERE booking_date = %s AND (start_time = %s OR end_time = %s) AND status NOT IN ('completed','canceled') AND station_id = %s"
+            cursor.execute(query, (booking_date,booking_time_start,booking_time_end,station_id,))
             databooking = cursor.fetchone()
             return databooking
         except Error as err:
@@ -162,10 +161,71 @@ class Database:
             self.test_connection()
         try:
             cursor = self.connection.cursor()
+            booking_time_start
+            booking_time_end
             query = "INSERT INTO history (user_id,station_id,start_time,end_time,booking_date,codebooking,status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(query, (user_id,station_id,booking_time_start,booking_time_end,booking_date,code,status,))
             self.connection.commit()
             print("INSERT history")
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+
+    def gethistory(self,user_id):
+        from User_Package import Booking
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            history = []
+            cursor = self.connection.cursor()
+            if user_id:
+                query = "SELECT * FROM history WHERE user_id = %s"
+                cursor.execute(query, (user_id,))
+                databooking = cursor.fetchall()
+            else:
+                query = "SELECT * FROM history"
+                cursor.execute(query, (user_id,))
+                databooking = cursor.fetchall()
+            for booking in databooking:
+                nbooking = Booking(*booking)
+                history.append(nbooking)
+            return history
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+    
+    def getBooking(self,booking_id):
+        from User_Package import Booking
+        from datetime import datetime
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM history WHERE history_id = %s"
+            cursor.execute(query, (booking_id,))
+            databooking = cursor.fetchone()
+            time1 = datetime.strptime(str(databooking[4]), "%H:%M:%S").time()
+            time2 = datetime.strptime(str(databooking[5]), "%H:%M:%S").time()
+            nbooking = Booking(databooking[0],databooking[1],databooking[2],databooking[3],time1,time2,databooking[6],databooking[7],databooking[8],)
+            return nbooking
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+    
+    def UpdateBooking(self,booking_id,booking_time_start,booking_time_end,booking_date):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "UPDATE history SET start_time = %s, end_time = %s, booking_date = %s WHERE history_id = %s;"
+            cursor.execute(query, (booking_time_start,booking_time_end,booking_date,booking_id,))
+            self.connection.commit()
         except Error as err:
             print(f"Error: {err}")
             return None
