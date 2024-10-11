@@ -297,8 +297,11 @@ class Main_page:
         @self.__app.get("/", response_class=HTMLResponse)
         async def showmain_page(request: Request):
             user_id = request.cookies.get("user_id")  # Get the username from cookies
-            user = self.__database.getUserInfo(user_id)
-            return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": user.get_username()})
+            if user_id:
+                user = self.__database.getUserInfo(user_id)
+                return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": user.get_username()})
+            else:
+                return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user":None})
 
 
     def include_routers(self):
