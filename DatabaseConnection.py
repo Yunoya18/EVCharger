@@ -86,3 +86,36 @@ class Database:
             return None
         finally:
             cursor.close()
+    
+    def editProfileDB(self,user_id,email,firstname,surname,hash_password,phone,picture_data):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        
+        try:
+            cursor = self.connection.cursor()
+            query = "UPDATE user SET firstname = %s, surname = %s, password = %s,email = %s, phone = %s, profile = %s WHERE user_id = %s;"
+            cursor.execute(query, (firstname,surname,hash_password,email,phone,picture_data,user_id,))
+            self.connection.commit()
+            return 0
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+
+    def getUserInfo(self, user_id):
+        from User_Package import User
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM user WHERE user_id = %s"
+            cursor.execute(query, (user_id,))
+            data_user = cursor.fetchone()
+            user = User(*data_user)
+            return user
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()

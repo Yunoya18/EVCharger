@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, APIRouter, Form, Depends
+from fastapi import FastAPI, Request, APIRouter, Form, Depends, UploadFile, File
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -6,6 +6,7 @@ from fastapi.exceptions import HTTPException
 from DatabaseConnection import Database
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import RedirectResponse
+import base64
 
 
 # Class User
@@ -16,6 +17,11 @@ class User:
         self.__email = email
         self.__password = password
         self.__firstname = firstname
+        self.__surname = surname
+        self.__phone = phone
+        self.__profile = profile
+        self.__status = status
+
     # Getter methods
     def get_user_id(self):
         return self.__user_id
@@ -236,7 +242,7 @@ class History:
 
 def get_current_user(request: Request):
     # Check for user cookie
-    user = request.cookies.get("username")
+    user = request.cookies.get("user_id")
     
     if not user:
         # If no cookie, redirect to login page
@@ -250,7 +256,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         # If the request path is not in exempt_paths, check if the user is logged in
         if not any(request.url.path.startswith(path) for path in exempt_paths):
-            user = request.cookies.get("username")
+            user = request.cookies.get("user_id")
             if not user:
                 return RedirectResponse(url="/login")  # Redirect to login if not authenticated
 
@@ -264,6 +270,7 @@ class Main_page:
         self.__app = FastAPI()
         self.__templates = Jinja2Templates(directory="templates")
         self.__app.mount("/static", StaticFiles(directory="static"), name="static")
+        self.__database = Database()
 
         #set page
         self.__booking_station_list_page = Booking_Station_list_page()
@@ -289,8 +296,9 @@ class Main_page:
     def setup_routes(self):
         @self.__app.get("/", response_class=HTMLResponse)
         async def showmain_page(request: Request):
-            username = request.cookies.get("username")  # Get the username from cookies
-            return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": username})
+            user_id = request.cookies.get("user_id")  # Get the username from cookies
+            user = self.__database.getUserInfo(user_id)
+            return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": user.get_username()})
 
 
     def include_routers(self):
@@ -358,9 +366,9 @@ class Login_Page:
             user = self.__database.validate_user(username, hash_password)
             if user:
                 # Successful login: Store user information or set session here if needed
-                print(f"User logged in: {user[2]}")  # Log the user's first name
+                print(f"User logged in: {user[0]}")  # Log the user's first name
                 response = RedirectResponse(url="/", status_code=303)  # Redirect to main page on success
-                response.set_cookie(key="username", value=user[2])  # Store username in cookie
+                response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
                 return response
             else:
                 return {"message": "Invalid username or password."}  # Handle login failure
@@ -368,7 +376,7 @@ class Login_Page:
         @self.__router.post("/logout")
         async def logout_user(request: Request):
             response = RedirectResponse(url="/", status_code=303)
-            response.delete_cookie("username")  # Clear the username cookie
+            response.delete_cookie("user_id")  # Clear the username cookie
             return response
 
     def get_router(self):
@@ -414,13 +422,15 @@ class Setting_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__database = Database()
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/setting", response_class=HTMLResponse)
         async def showSetting_page(request: Request):
-            username = request.cookies.get("username")
-            return self.__templates.TemplateResponse("setting.html", {"request": request, "user": username})
+            user_id = request.cookies.get("user_id")
+            user = self.__database.getUserInfo(user_id)
+            return self.__templates.TemplateResponse("setting.html", {"request": request, "user": user.get_username()})
 
     def get_router(self):
         return self.__router
@@ -429,17 +439,36 @@ class Profile_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__database = Database()
         self.setup_routes()
 
     def setup_routes(self):
+        import hashlib
         @self.__router.get("/profile", response_class=HTMLResponse)
         async def showProfile_page(request: Request):
-            return self.__templates.TemplateResponse("profile.html", {"request": request})
+            user_id = request.cookies.get("user_id")
+            user = self.__database.getUserInfo(user_id)
+            profile_picture_data = base64.b64encode(user.get_profile()).decode("utf-8")
+            profile_picture_url = f"data:image/jpeg;base64,{profile_picture_data}"
+            return self.__templates.TemplateResponse("profile.html", {"request": request, "pic":profile_picture_url,"user":user})
         
         @self.__router.post("/profile", response_class=HTMLResponse)
-        async def edit_profile(request: Request):
-            print("dddd")
-            return self.__templates.TemplateResponse("profile.html", {"request": request})
+        async def edit_profile(
+            request: Request,
+            full_name: str = Form(...),
+            email: str = Form(...),
+            password: str = Form(...),
+            phone: str = Form(...),
+            fileInput: UploadFile = File(...)
+        ):
+            full_name = full_name.split()
+            firstname = full_name[0]
+            surname = full_name[1]
+            user_id = request.cookies.get("user_id")
+            hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            picture_data = await fileInput.read()
+            self.__database.editProfileDB(user_id,email,firstname,surname,hash_password,phone,picture_data)
+            return RedirectResponse(url="/profile", status_code=303)
 
     def get_router(self):
         return self.__router
