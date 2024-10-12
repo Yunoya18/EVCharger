@@ -34,24 +34,11 @@ class Admin_main_page:
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
         self.setup_routes()
-        self.include_routes()
-
-        #set page
-        self.__announcement_page = Announcement_page()
-        self.__customer_page = Customer_page()
-        self.__history_page = History_page()
-        self.__station_edit_page = Station_edit_page()
 
     def setup_routes(self):
         @self.__router.get("/admin", response_class=HTMLResponse)
         async def show_admin_main_page(request: Request):
-            return self.__templates.TemplateResponse("admin-main.html")
-
-    def include_routes(self):
-        self.__router.include_router(self.__announcement_page.get_router())
-        self.__router.include_router(self.__customer_page.get_router())
-        self.__router.include_router(self.__history_page.get_router())
-        self.__router.include_router(self.__station_edit_page.get_router())
+            return self.__templates.TemplateResponse("admin-main.html", {"request": request})
 
     def get_router(self):
         return self.__router

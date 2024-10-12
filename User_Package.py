@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse
 from datetime import datetime
 import base64
 import json
+from Admin_Page import Admin_main_page,Announcement_page,Customer_page,History_page,Station_edit_page
 
 
 
@@ -303,6 +304,11 @@ class Main_page:
         self.__result_page = Result()
         self.__booking_station_page = Booking_Station_page()
         self.__use_page = Use_page()
+        self.__admin_main_page = Admin_main_page()
+        self.__announcement_page = Announcement_page()
+        self.__customer_page = Customer_page()
+        self.__history_page = History_page()
+        self.__station_edit_page = Station_edit_page()
 
         self.__app.add_middleware(AuthMiddleware)
 
@@ -347,6 +353,11 @@ class Main_page:
         self.__app.include_router(self.__result_page.get_router())
         self.__app.include_router(self.__booking_station_page.get_router())
         self.__app.include_router(self.__use_page.get_router())
+        self.__app.include_router(self.__admin_main_page.get_router())
+        self.__app.include_router(self.__announcement_page.get_router())
+        self.__app.include_router(self.__customer_page.get_router())
+        self.__app.include_router(self.__history_page.get_router())
+        self.__app.include_router(self.__station_edit_page.get_router())
 
     def get_app(self):
         return self.__app
