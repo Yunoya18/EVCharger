@@ -13,17 +13,49 @@
       referrerpolicy="no-referrer"
     />
   </head>
+  <style>
+    .back{
+      display: flex;
+      justify-content: center;
+      width: 10%;
+      font-size: 70px;
+    }
+    .head{
+      display: flex;
+    }
+    .headset{
+      display: flex;
+      justify-content: center;
+      width: 20%;
+    }
+    .mid-head{
+      width: 70%;
+    }
+    .hh{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .user-mid{
+      display: flex;
+      justify-content: center;
+    }
+    .butt{
+      display: flex;
+      justify-content: center;
+    }
+  </style>
   <body>
-    <div class="bg-orange-400 h-[130px] md:h-14">
-      <div class="flex flex-row text-white w-full h-full">
-        <a href="/">&#8249;</a>
-        <div class="mt-auto md:mt-3 flex flex-col md:flex-row">
+    <div class="head bg-orange-400">
+      <div class="head flex flex-row text-white w-full h-full">
+        <a class="back" href="/">&#8249;</a>
+        <div class="mid-head">
           {% if user%}
-          <h2 class="px-4 text-3xl">{{ user }}</h2>
+          <h2 class="user-mid px-4 text-3xl">{{ user }}</h2>
           {% else %}
-          <h2 class="px-4 text-3xl">Guest</h2>
+          <h2 class="user-mid px-4 text-3xl">Guest</h2>
           {% endif %}
-          <div class="flex flex-row gap-4 py-2">
+          <div class="user-mid flex flex-row gap-4 py-2">
             <div>
               <i class="fa-solid fa-user"></i>
               : MEMBER
@@ -31,9 +63,9 @@
             <div>CREDIT: 0.0</div>
           </div>
         </div>
-        <div class="ml-auto">
-          <div class="py-5 px-7 md:py-2 md:px-3">
-            <i class="fa-solid fa-headset text-4xl"></i>
+        <div class="headset">
+          <div class="hs flex">
+            <i class="hh fa-solid fa-headset text-4xl"></i>
           </div>
         </div>
       </div>
@@ -43,16 +75,16 @@
       <div>
         <h2 class="py-7 px-6 text-3xl font-medium">My Account</h2>
         <ul class="flex flex-col divide-y text-center">
-          <li class="py-2 pl-20 text-xl ">
+          <li class="butt py-2  text-xl ">
             <a href="#"> Verification </a>
           </li>
-          <li class="py-2 pl-20 text-xl">
+          <li class="butt py-2  text-xl">
             <a href="#"> Payment </a>
           </li>
-          <li class="py-2 pl-20 text-xl">
+          <li class="butt py-2  text-xl">
             <a href="/profile"> Edit Profile </a>
           </li>
-          <li class="py-2 pl-20 text-xl">
+          <li class="butt py-2  text-xl">
             <a href="#"> Your Car </a>
           </li>
         </ul>
@@ -60,10 +92,10 @@
       <div>
         <h2 class="py-7 px-6 text-3xl font-medium">General</h2>
         <ul class="flex flex-col divide-y text-center">
-          <li class="py-2 pl-20 text-xl">
+          <li class="butt py-2  text-xl">
             <a href="#"> Language </a>
           </li>
-          <li class="py-2 pl-20 text-xl">
+          <li class="butt py-2  text-xl">
             <form action="/logout" method="post">
               <button > Logout </button>
             </form>
