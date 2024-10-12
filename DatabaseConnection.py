@@ -218,14 +218,33 @@ class Database:
         finally:
             cursor.close()
     
-    def UpdateBooking(self,booking_id,booking_time_start,booking_time_end,booking_date):
+    def UpdateBooking(self,booking_id,booking_time_start=None,booking_time_end=None,booking_date=None):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            query = "UPDATE history SET start_time = %s, end_time = %s, booking_date = %s WHERE history_id = %s;"
-            cursor.execute(query, (booking_time_start,booking_time_end,booking_date,booking_id,))
+            if booking_time_start and booking_time_end and booking_date:
+                query = "UPDATE history SET start_time = %s, end_time = %s, booking_date = %s WHERE history_id = %s;"
+                cursor.execute(query, (booking_time_start,booking_time_end,booking_date,booking_id,))
+            else:
+                query = "UPDATE history SET status = %s WHERE history_id = %s;"
+                cursor.execute(query, ('completed', booking_id,))
             self.connection.commit()
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()
+    
+    def UpdateBookingALL(self, today,timetoday):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "UPDATE history SET status = %s WHERE (booking_date < %s OR (booking_date = %s AND end_time < %s)) AND status != %s;"
+            cursor.execute(query, ("canceled",today,today,timetoday,"complete",))
+            self.connection.commit()
+            print(today,timetoday)
         except Error as err:
             print(f"Error: {err}")
             return None

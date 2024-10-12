@@ -207,7 +207,7 @@ class Booking:
         return str(self.__end_time)
 
     def get_status(self):
-        return self.__status
+        return str(self.__status)
 
     def get_booking_date(self):
         return str(self.__booking_date)
@@ -570,6 +570,7 @@ class Booking_List_page:
                 result = time1 <= time2 <= time3
                 dateb = booking.get_booking_date() == self.__timetoday[0] and result
                 listshow.append(dateb)
+            self.__database.UpdateBookingALL(self.__timetoday[0],time2)
             return self.__templates.TemplateResponse("Booking_list.html", {"request": request, "allbooking":zip(allbooking,listshow)})
 
         @self.__router.get("/booking/edit/{booking_id}/{station_id}", response_class=HTMLResponse)
@@ -605,14 +606,31 @@ class Use_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__timetoday = str(datetime.now()).split()
+        self.__database = Database()
         self.setup_routes()
     def setup_routes(self):
-        @self.__router.get("/use", response_class=HTMLResponse)
-        async def showUse(request: Request):
+        @self.__router.get("/use/{booking_id}", response_class=HTMLResponse)
+        async def showUse(request: Request,booking_id: int):
             user_id = request.cookies.get("user_id")
             if not user_id:
                 return RedirectResponse(url="/login")
-            return self.__templates.TemplateResponse("use-case.html", {"request": request})
+            self.__database.UpdateBooking(booking_id)
+            booking = self.__database.getBooking(booking_id)
+            time1 = datetime.strptime(booking.get_end_time(), "%H:%M:%S").time()
+            time2 = datetime.strptime(self.__timetoday[1][:-7], "%H:%M:%S").time()
+
+            # แปลง time เป็น datetime เพื่อให้สามารถทำการลบกันได้
+            time1_dt = datetime.combine(datetime.today(), time1)
+            time2_dt = datetime.combine(datetime.today(), time2)
+
+            # คำนวณผลต่างของเวลา
+            time_difference = time1_dt - time2_dt
+
+            # แปลงผลต่างเป็นนาที
+            timeleft_minutes = time_difference.total_seconds() // 60
+            timeleft_sec = time_difference.total_seconds() % 60
+            return self.__templates.TemplateResponse("use-case.html", {"request": request, "booking":booking,"timeleft_minutes":timeleft_minutes,"timeleft_sec":timeleft_sec})
     def get_router(self):
         return self.__router
 

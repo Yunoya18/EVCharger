@@ -69,12 +69,12 @@
                 <div class="right-side">
                     <div class="station-name">Ladkrabang Station</div>
                     <div class="buttons">
-                        <a href="/use" class="status-btn ready">ready</a>
+                        <a href="/use/{{booking.get_booking_id()}}" class="status-btn ready">ready</a>
                         <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
                     </div>
                 </div>
             </div>
-            {% elif show == False and not booking.get_status() == "canceled"%}
+            {% elif show == False and not booking.get_status() == "canceled" %}
             <div class="station-card">
                 <div class="left-side">
                     <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
