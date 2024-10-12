@@ -223,7 +223,7 @@ class Database:
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            if booking_time_start and booking_time_end and booking_date and status:
+            if booking_time_start and booking_time_end and booking_date:
                 query = "UPDATE history SET start_time = %s, end_time = %s, booking_date = %s WHERE history_id = %s;"
                 cursor.execute(query, (booking_time_start,booking_time_end,booking_date,booking_id,))
             else:
@@ -242,7 +242,10 @@ class Database:
         try:
             cursor = self.connection.cursor()
             query = "UPDATE history SET status = %s WHERE (booking_date < %s OR (booking_date = %s AND end_time < %s)) AND status != %s;"
-            cursor.execute(query, ("canceled",today,today,timetoday,"complete",))
+            cursor.execute(query, ("canceled",today,today,timetoday,"completed",))
+            self.connection.commit()
+            query = "UPDATE history SET status = %s WHERE (booking_date < %s OR (booking_date = %s AND end_time < %s)) AND status = %s;"
+            cursor.execute(query, ("ended",today,today,timetoday,"completed",))
             self.connection.commit()
             print(today,timetoday)
         except Error as err:

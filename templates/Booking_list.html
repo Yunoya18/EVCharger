@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            {% elif not booking.get_status() == "canceled" %}
+            {% elif not booking.get_status() == "canceled" and not booking.get_status() == "ended"%}
             <div class="station-card" id="booking-{{ booking.get_booking_id() }}">
                 <div class="left-side">
                     <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
