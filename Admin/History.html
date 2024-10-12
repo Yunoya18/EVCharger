@@ -13,23 +13,28 @@
     <div class="main-content">
         <h1>History</h1>
         <div class="content">
+            <div class="history-list">
             {% if all_history %}
                 {% for history in all_history %}
                     <!-- history info-->
-                    <div class="divider"></div>
+                    
                 {% endfor %}
             {% else %}
                 <span>No history.</span>
             {% endif %}
-            <div class="pagination">
-                <a href="#" class="prev">&lt;</a>
-                <a href="#" class="page-number active">1</a>
-                <a href="#" class="page-number">2</a>
-                <a href="#" class="page-number">3</a>
-                <a href="#" class="page-number">4</a>
-                <a href="#" class="page-number">5</a>
-                <a href="#" class="page-number">6</a>
-                <a href="#" class="next">&gt;</a>
+            </div>
+            <div class="divider"></div>
+            <div class="lower">
+                <div class="pagination">
+                    <a href="#" class="prev">&lt;</a>
+                    <a href="#" class="page-number">1</a>
+                    <a href="#" class="page-number">2</a>
+                    <a href="#" class="page-number">3</a>
+                    <a href="#" class="page-number">4</a>
+                    <a href="#" class="page-number">5</a>
+                    <a href="#" class="page-number">6</a>
+                    <a href="#" class="next">&gt;</a>
+                </div>
             </div>
         </div>
     </div>

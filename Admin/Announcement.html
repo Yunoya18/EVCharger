@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="../static/css/Announcement2.css">
     <title>Announcement</title>
 </head>
+<style>
+    .sent{
+        display: flex;
+        gap: 10px;
+    }
+    #send-to{
+        width: 80%;
+    }
+    #sub{
+        width: 20%;
+    }
+</style>
 <body>
     <div class="main-content">
         <h1>Announcement</h1>
@@ -21,7 +33,11 @@
                 <div class="frame">
                     <div class="send-to-container">
                         <label for="send-to">Send to:</label>
-                        <input type="text" id="send-to" placeholder="Enter recipient" />
+                        <form action="" class="sent" method="POST">
+                            <input type="text" id="send-to" placeholder="Enter recipient" />
+                            <input type="submit" id="sub" placeholder="Send">
+                        </form>
+                        
                     </div>
                 </div>
                 <div class="frame recently-frame"> <!-- เพิ่มคลาส recently-frame -->

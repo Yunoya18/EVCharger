@@ -32,7 +32,7 @@ body {
 }
 
 .content {
-    flex-grow: 1;
+    height: 1000px;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 20px;
@@ -40,25 +40,32 @@ body {
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* กระจายเนื้อหา */
     align-items: center;
     box-shadow: 0 3px 10.7px rgba(0, 0, 0, 0.1); /* drop shadow สำหรับกรอบข้างใน */
-    position: relative; /* เพื่อให้จัดวาง pagination โดยอิงจากกรอบนี้ */
 }
 
 .divider {
     width: 100%; /* กำหนดความกว้างให้เต็ม */
     height: 0.5px; /* ความสูงของเส้นแบ่ง */
     background-color: black; /* สีของเส้นแบ่ง */
-    position: absolute; /* ใช้ตำแหน่งแบบ absolute */
     bottom: 70px; /* ระยะห่างจากด้านล่าง (เพื่อไม่ให้ทับกับ pagination) */
+}
+.history-list{
+    height: 90%;
+}
+
+.lower{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 10%;
+    width: 100%;
 }
 
 .pagination {
     display: flex;
     justify-content: flex-end; /* จัดตัวเลขบอกหน้าไปทางขวา */
     gap: 10px;
-    position: absolute; /* ใช้ตำแหน่งแบบ absolute */
     bottom: 20px; /* ระยะห่างจากด้านล่าง */
     right: 20px; /* ระยะห่างจากด้านขวา */
 }
