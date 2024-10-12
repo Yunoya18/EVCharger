@@ -175,7 +175,6 @@
 </body>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    // ฟังก์ชันสำหรับการโหลดแผนที่
     function loadMap(lat, lng) {
         var map = L.map('map').setView([lat, lng], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -183,25 +182,52 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
         var userMarker = L.marker([lat, lng]).addTo(map);
-        userMarker.bindPopup("คุณอยู่ที่นี่").openPopup();  // แสดง popup เมื่อคลิกที่ marker
+        userMarker.bindPopup("คุณอยู่ที่นี่").openPopup()
+        var list_allstation = {{ list_allstation | tojson }};
+        list_allstation.forEach(function(station) {
+            var stationMarker = L.marker([station.lat, station.lng]).addTo(map);
+            stationMarker.bindPopup(station.name).openPopup();
+});
         return map;
     }
-    // ฟังก์ชันสำหรับการขอพิกัดของผู้ใช้
     function requestUserLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var lat = position.coords.latitude;
-                var lng = position.coords.longitude;
-                loadMap(lat, lng);  // เปลี่ยนจาก initializeMap เป็น loadMap
-            }, function() {
-                // ถ้าไม่สามารถขอพิกัดได้ ให้ใช้พิกัดกรุงเทพ
-                loadMap(13.7563, 100.5018);  // เปลี่ยนจาก initializeMap เป็น loadMap
-            });
-        } else {
-            // ถ้าเบราว์เซอร์ไม่รองรับ geolocation
-            loadMap(13.7563, 100.5018);  // เปลี่ยนจาก initializeMap เป็น loadMap
-        }
-
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            loadMap(lat, lng);
+            sendLocationToServer(lat, lng);
+        }, function() {
+            var defaultLat = 13.7563;
+            var defaultLng = 100.5018;
+            loadMap(defaultLat, defaultLng);
+            sendLocationToServer(defaultLat, defaultLng);
+        });
+    } else {
+        var defaultLat = 13.7563;
+        var defaultLng = 100.5018;
+        loadMap(defaultLat, defaultLng);
+        sendLocationToServer(defaultLat, defaultLng);
+    }
+}
+    function sendLocationToServer(lat, lng) {
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                latitude: lat,
+                longitude: lng,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
     requestUserLocation();
 </script>

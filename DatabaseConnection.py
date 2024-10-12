@@ -74,7 +74,7 @@ class Database:
             query = "SELECT * FROM locations"
             cursor.execute(query)
             location = cursor.fetchall()
-            location_dict = {item[0]: (float(item[1]), float(item[1])) for item in location}
+            location_dict = {item[0]: (float(item[1]), float(item[2])) for item in location}
             list_allstaion = []
             for data in allstation:
                 address = location_dict.get(data[1], "No location")

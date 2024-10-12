@@ -8,6 +8,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import RedirectResponse
 from datetime import datetime
 import base64
+import json
 
 
 
@@ -290,6 +291,7 @@ class Main_page:
         self.__templates = Jinja2Templates(directory="templates")
         self.__app.mount("/static", StaticFiles(directory="static"), name="static")
         self.__database = Database()
+        self.__allstation = All_Station()
 
         #set page
         self.__booking_station_list_page = Booking_Station_list_page()
@@ -317,12 +319,22 @@ class Main_page:
         @self.__app.get("/", response_class=HTMLResponse)
         async def showmain_page(request: Request):
             user_id = request.cookies.get("user_id")  # Get the username from cookies
+            list_allstation = self.__allstation.getAllStation()
+            stations_data = [{"lat": station.get_lat(), "lng": station.get_lng(), "name": station.get_station_name()} for station in list_allstation]
+            print(stations_data)
             if user_id:
                 user = self.__database.getUserInfo(user_id)
-                return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": user.get_username()})
+                return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user": user.get_username(),"list_allstation":stations_data})
             else:
-                return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user":None})
-
+                return self.__templates.TemplateResponse("Customer-main.html", {"request": request, "user":None, "list_allstation":stations_data})
+        @self.__app.post("/", response_class=HTMLResponse)
+        async def get_location_user(request: Request):
+            data = await request.json()
+            lat = data.get("latitude")
+            lng = data.get("longitude")
+            response = HTMLResponse(content="Received latitude and longitude")
+            response.set_cookie(key="user_location", value=f"lat={lat}&lng={lng}")
+            return response
 
     def include_routers(self):
         # รวม APIRouter จากคลาสอื่นๆ
@@ -351,12 +363,38 @@ class Booking_Station_list_page:
         @self.__router.get("/booking", response_class=HTMLResponse)
         async def toBooking_Station_list_page(request: Request):
             user_id = request.cookies.get("user_id")
+            address = request.cookies.get("user_location")
+            all_station = self.__all_station.get_station_list()
+            if address:
+                all_station.sort(key=lambda station: self.sortstation(station, request))
             if not user_id:
                 return RedirectResponse(url="/login")
-            return self.__templates.TemplateResponse("station-list.html", {"request": request, "all_station":self.__all_station.get_station_list()})
+            return self.__templates.TemplateResponse("station-list.html", {"request": request, "all_station": all_station})
+    
+    def sortstation(self, station, request: Request):
+        from urllib.parse import parse_qs
+        address = request.cookies.get("user_location")
+        parsed_address = parse_qs(address)
+        lat = float(parsed_address.get('lat', [None])[0])
+        lng = float(parsed_address.get('lng', [None])[0])
+        
+        station_lat = station.get_lat()
+        station_lng = station.get_lng()
+        
+        return self.haversine(lat, lng, station_lat, station_lng)
 
+    def haversine(self, lat1, lon1, lat2, lon2):
+        import math
+        R = 6371  # Radius of Earth in kilometers
+        dLat = math.radians(lat2 - lat1)
+        dLon = math.radians(lon2 - lon1)
+        a = math.sin(dLat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return R * c  # Distance in kilometers
+    
     def get_router(self):
         return self.__router
+
 
 # Class Booking_Station_page
 class Booking_Station_page:
