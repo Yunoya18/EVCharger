@@ -107,14 +107,18 @@
 </head>
 <body>
     <div class="content-header">
-        <a href="customer.html" class="active"><img class="cusimg"src="../static/img/customer-icon.png" alt="Customer Icon">Customer</a>
+        <a href="/customer" class="active"><img class="cusimg"src="../static/img/customer-icon.png" alt="Customer Icon">Customer</a>
         <a class="state"><img class="gasimg" src="../static/img/Gas Station.png" alt="Station Icon">Station</a>
     </div>
     <hr>
     <div class="bottom">
         <div class="status-section">
             <h2>In-Active</h2>
-            <p>No customers are currently active.</p>
+            {% if in_active_user %}
+                <!-- active user -->
+            {% else %}
+                <p>No customers are currently active.</p>
+            {% endif %}
         </div>
         <div class="stats">
             <div class="totalbook">
