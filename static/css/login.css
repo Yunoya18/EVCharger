@@ -30,7 +30,7 @@
     color: #fff;
 }
 
-button {
+#login-form button {
     width: 200px;
     margin: 10px;
     margin-left: 5px;
@@ -51,6 +51,7 @@ button:hover {
 
 .info{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-top: 50px;

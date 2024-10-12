@@ -53,16 +53,15 @@
             cursor: pointer;
         }
 
-        .container {
-            background-color: aqua;
-            width: 100px;
-            height: 100;
+        .station-panel {
             padding: 20px;
-            margin-top: 70px; 
+            margin-top: 80px; 
             height: auto; 
             overflow-y: scroll;
         }
-        /* .station {
+        .station {
+            display: flex;
+            flex-direction: column;
             background-color: white;
             border-radius: 10px;
             height: 300px;
@@ -70,7 +69,14 @@
             margin-bottom: 20px;
             overflow: hidden;
         }
-
+        .image{
+            height: 70%;
+            background-image: url("../static/img/station_pic.png");
+            background-size: cover;
+        }
+        .station-text{
+            height: 30%;
+        }
         .station img {
             width: 100%;
             height: auto;
@@ -78,7 +84,7 @@
 
         .station .info {
             padding: 10px;
-        } */
+        }
     </style>
 </head>
 <body>
@@ -89,16 +95,23 @@
             <button>Filter</button>
         </div>
     </div>
+    <div class="station-panel">
     {% if all_station %}
         {% for station in all_station %}
-            <div class="container">
+            <div class="station">
+            <div class="image">
+                
+            </div>
+            <div class="station-text">
                 <a href="/booking/station/{{ station.get_station_id() }}">
                     {{ station.get_station_name() }} - {{ station.get_status() }} - {{ station.get_price_per_hour() }}
                 </a>
+            </div>
             </div>
         {% endfor %}
     {% else %}
         <p>No stations available.</p>
     {% endif %}
+</div>
 </body>
 </html>
