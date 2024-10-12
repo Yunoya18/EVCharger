@@ -4,22 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Station Layout</title>
-    <link rel="stylesheet" href="station_edit.css">
+    <link rel="stylesheet" href="../static/css/station_edit.css">
 </head>
 <body>
     <div class="container">
         <h1>Station</h1>
         <div class="content-area">
-            <span>เด็กชาย โฟค รวยคับ</span>
-            <button class="edit-btn"id="edit-btn">Edit</button>
-        </div>
-            <div id="popup-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2>Station 1</h2>
-                <p>รู้ว่าต้องกดดู</p>
-                <button class="delete-btn">Delete</button>
-            </div>
+            {% if all_station %}
+                {% for station in all_station %}
+                    <span>
+                        Station {{station.get_station_id()}} - {{station.get_station_name()}}
+                    </span>
+                    <button class="edit-btn"id="edit-btn">Edit</button>
+                    <div id="popup-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close-btn">&times;</span>
+                            <h2>Station {{station.get_station_id()}}</h2>
+                            <p>รู้ว่าต้องกดดู</p>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <span>No stations available.</span>
+            {% endif %}
         </div>
         <div class="pagination">
             <button class="pagination-btn">&#8249;</button>

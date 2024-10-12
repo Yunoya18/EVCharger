@@ -33,29 +33,18 @@ class Admin_main_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
+        self.__in_active_user = None #รอดึงข้อมูล
+        self.__total_customer = 0
+        self.__total_booking = 0
         self.setup_routes()
-        self.include_routes()
-
-        #set page
-        self.__announcement_page = Announcement_page()
-        self.__customer_page = Customer_page()
-        self.__history_page = History_page()
-        self.__station_edit_page = Station_edit_page()
 
     def setup_routes(self):
         @self.__router.get("/admin", response_class=HTMLResponse)
         async def show_admin_main_page(request: Request):
-            return self.__templates.TemplateResponse("admin-main.html")
-
-    def include_routes(self):
-        self.__router.include_router(self.__announcement_page.get_router())
-        self.__router.include_router(self.__customer_page.get_router())
-        self.__router.include_router(self.__history_page.get_router())
-        self.__router.include_router(self.__station_edit_page.get_router())
+            return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer})
 
     def get_router(self):
         return self.__router
-
 
 class Announcement_page:
     def __init__(self):
@@ -65,8 +54,11 @@ class Announcement_page:
 
     def setup_routes(self):
         @self.__router.get("/announcement", response_class=HTMLResponse)
-        async def create_annoucement(request: Request):
+        async def show_annoucement_page(request: Request):
             return self.__templates.TemplateResponse("Announcement.html", {"request": request})
+        @self.__router.post("/announcement", response_class=HTMLResponse)
+        async def create_announcement(request: Request):
+            pass
 
     def get_router(self):
         return self.__router
@@ -75,12 +67,13 @@ class Customer_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
+        self.__all_customer = None
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/customer", response_class=HTMLResponse)
         async def show_customer(request: Request):
-            return self.__templates.TemplateResponse("customer.html", {"request": request})
+            return self.__templates.TemplateResponse("Admin-Customer.html", {"request": request})
 
     def get_router(self):
         return self.__router
@@ -89,12 +82,13 @@ class History_page:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
+        self.__all_history = None #รอดึงข้อมูล
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/history", response_class=HTMLResponse)
         async def show_history(request: Request):
-            return self.__templates.TemplateResponse("History.html", {"request": request})
+            return self.__templates.TemplateResponse("History.html", {"request": request, "all_history": self.__all_history})
 
     def get_router(self):
         return self.__router
@@ -102,13 +96,14 @@ class History_page:
 class Station_edit_page:
     def __init__(self):
         self.__router = APIRouter()
-        self.__templates= Jinja2Templates(directory="Admin")
+        self.__templates = Jinja2Templates(directory="Admin")
+        self.__all_station = None #รอดึงข้อมูล
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/edit_station", response_class=HTMLResponse)
         async def edit_station(request: Request):
-            return self.__templates.TemplateResponse("station_edit.html", {"request": request})
+            return self.__templates.TemplateResponse("station_edit.html", {"request": request, "all_station": self.__all_station})
 
     def get_router(self):
         return self.__router

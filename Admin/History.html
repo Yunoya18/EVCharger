@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <!-- ลิงก์ไปยังไฟล์ CSS -->
-    <link rel="stylesheet" href="History2.css">
+    <link rel="stylesheet" href="../static/css/History2.css">
     <!-- ลิงก์ไปยังฟอนต์ Krona One จาก Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
 </head>
@@ -13,7 +13,14 @@
     <div class="main-content">
         <h1>History</h1>
         <div class="content">
-            <div class="divider"></div>
+            {% if all_history %}
+                {% for history in all_history %}
+                    <!-- history info-->
+                    <div class="divider"></div>
+                {% endfor %}
+            {% else %}
+                <span>No history.</span>
+            {% endif %}
             <div class="pagination">
                 <a href="#" class="prev">&lt;</a>
                 <a href="#" class="page-number active">1</a>
