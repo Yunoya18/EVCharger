@@ -41,7 +41,7 @@ class Admin_main_page:
     def setup_routes(self):
         @self.__router.get("/admin", response_class=HTMLResponse)
         async def show_admin_main_page(request: Request):
-            return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer})
+            return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
 
     def get_router(self):
         return self.__router
@@ -93,11 +93,13 @@ class History_page:
     def get_router(self):
         return self.__router
 
+#เหลือกดปุ่มแล้วลบ
 class Station_edit_page:
     def __init__(self):
+        from User_Package import All_Station
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="Admin")
-        self.__all_station = None #รอดึงข้อมูล
+        self.__all_station = All_Station().get_station_list()
         self.setup_routes()
 
     def setup_routes(self):

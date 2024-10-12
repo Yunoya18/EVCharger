@@ -152,6 +152,7 @@ class All_Station:
     # Setter methods
     def set_station_list(self,station_list):
         self.__station_list = station_list
+
 # Class Payment
 class Payment:
     def __init__(self, payment_id, amount, payment_time):
