@@ -572,6 +572,13 @@ class Booking_List_page:
                 listshow.append(dateb)
             self.__database.UpdateBookingALL(self.__timetoday[0],time2)
             return self.__templates.TemplateResponse("Booking_list.html", {"request": request, "allbooking":zip(allbooking,listshow)})
+        @self.__router.post("/booking_list/{booking_id}", response_class=HTMLResponse)
+        async def EditBookingcancle(request: Request,booking_id: int):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
+            self.__database.UpdateBooking(booking_id,None,None,None,"canceled")
+            return RedirectResponse(url="/booking_list", status_code=303)
 
         @self.__router.get("/booking/edit/{booking_id}/{station_id}", response_class=HTMLResponse)
         async def EditBooking(request: Request, booking_id: int, station_id: int):
@@ -615,7 +622,7 @@ class Use_page:
             user_id = request.cookies.get("user_id")
             if not user_id:
                 return RedirectResponse(url="/login")
-            self.__database.UpdateBooking(booking_id)
+            self.__database.UpdateBooking(booking_id,None,None,None,"completed")
             booking = self.__database.getBooking(booking_id)
             time1 = datetime.strptime(booking.get_end_time(), "%H:%M:%S").time()
             time2 = datetime.strptime(self.__timetoday[1][:-7], "%H:%M:%S").time()

@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Station Status</title>
-    <link rel="stylesheet" href="..\static\css\Booking_list2.css">
+    <link rel="stylesheet" href="../static/css/Booking_list2.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Krona+One&display=swap" rel="stylesheet">
 </head>
 <body>
     <style>
-            .popup-overlay {
+        .popup-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -57,42 +57,39 @@
         .cancel-btn {
             background-color: #ccc;
         }
-
     </style>
     <div class="container">
-        {% for booking,show in allbooking %}
-            {%if show %}
-            <div class="station-card">
+        {% for booking, show in allbooking %}
+            {% if show %}
+            <div class="station-card" id="booking-{{ booking.get_booking_id() }}">
                 <div class="left-side">
                     <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
                 </div>
                 <div class="right-side">
                     <div class="station-name">Ladkrabang Station</div>
                     <div class="buttons">
-                        <a href="/use/{{booking.get_booking_id()}}" class="status-btn ready">ready</a>
-                        <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+                        <a href="/use/{{ booking.get_booking_id() }}" class="status-btn ready">Ready</a>
+                        <button class="status-btn cancel" onclick="showPopup('{{ booking.get_booking_id() }}')">Cancel</button>
                     </div>
                 </div>
             </div>
-            {% elif show == False and not booking.get_status() == "canceled" %}
-            <div class="station-card">
+            {% elif not booking.get_status() == "canceled" %}
+            <div class="station-card" id="booking-{{ booking.get_booking_id() }}">
                 <div class="left-side">
                     <img src="../static/img/Car Top View.png" alt="Car Icon" class="station-icon">
                 </div>
                 <div class="right-side">
                     <div class="station-name">Ladkrabang Station</div>
-                    <form action="/booking/edit/{{booking.get_booking_id()}}/{{booking.get_station()}}">
                     <div class="buttons">
-                        <button class="status-btn waiting">Edit</button>
-                    </form>
-                        <button class="status-btn cancel" onclick="showPopup('station2')">cancel</button>
+                        <a href="/booking/edit/{{ booking.get_booking_id() }}/{{ booking.get_station() }}" class="status-btn waiting">Edit</a>
+                        <button class="status-btn cancel" onclick="showPopup('{{ booking.get_booking_id() }}')">Cancel</button>
                     </div>
                 </div>
             </div>
             {% endif %}
         {% endfor %}
         <a href="/">
-            <button href="Customer-main.html" class="back-arrow">
+            <button class="back-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
@@ -104,7 +101,9 @@
             <h2>Confirm Cancellation</h2>
             <p>Are you sure you want to cancel this booking?</p>
             <div class="popup-buttons">
-                <button class="confirm-btn" onclick="confirmCancel()">Confirm</button>
+                <form id="cancel-form" method="post">
+                    <button class="confirm-btn" type="submit">Confirm</button>
+                </form>
                 <button class="cancel-btn" onclick="closePopup()">Cancel</button>
             </div>
         </div>
@@ -112,25 +111,18 @@
 
 </body>
 <script>
-        let stationToDelete = null;
+    let bookingToCancel = null;
 
-function showPopup(stationId) {
-    stationToDelete = stationId;
-    document.getElementById("popup-overlay").style.display = "flex";
+    function showPopup(bookingId) {
+        bookingToCancel = bookingId;
+        // ตั้งค่า action ของฟอร์มใน popup ให้เป็น URL ที่ต้องการส่งไปยัง backend
+        document.getElementById("cancel-form").action = `/booking_list/${bookingId}`;
+        document.getElementById("popup-overlay").style.display = "flex";
 }
 
-
-function closePopup() {
-    document.getElementById("popup-overlay").style.display = "none";
-}
-
-
-function confirmCancel() {
-    if (stationToDelete) {
-        document.getElementById(stationToDelete).remove(); 
-        closePopup(); 
-        alert("Booking cancelled successfully!"); 
+    function closePopup() {
+        bookingToCancel = null;
+        document.getElementById("popup-overlay").style.display = "none";
     }
-}
 </script>
 </html>

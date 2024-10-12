@@ -218,17 +218,17 @@ class Database:
         finally:
             cursor.close()
     
-    def UpdateBooking(self,booking_id,booking_time_start=None,booking_time_end=None,booking_date=None):
+    def UpdateBooking(self,booking_id,booking_time_start=None,booking_time_end=None,booking_date=None,status=None):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            if booking_time_start and booking_time_end and booking_date:
+            if booking_time_start and booking_time_end and booking_date and status:
                 query = "UPDATE history SET start_time = %s, end_time = %s, booking_date = %s WHERE history_id = %s;"
                 cursor.execute(query, (booking_time_start,booking_time_end,booking_date,booking_id,))
             else:
                 query = "UPDATE history SET status = %s WHERE history_id = %s;"
-                cursor.execute(query, ('completed', booking_id,))
+                cursor.execute(query, (status, booking_id,))
             self.connection.commit()
         except Error as err:
             print(f"Error: {err}")
