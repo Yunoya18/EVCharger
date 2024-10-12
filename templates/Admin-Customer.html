@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer</title>
+    <link rel="stylesheet" href="style1.css">
+    <style>
+        /* Add some basic styling for the popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .popup h2 {
+            margin: 0;
+            padding-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .popup p {
+            text-align: left;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .popup button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .popup button:hover {
+            background-color: #ff5252;
+        }
+
+        /* Dark overlay for when popup is open */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Customer</h1>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+        </div>
+    
+        <div class="krob">
+        <div class="krob-on"> 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr> <td> <a href="#" class="popup-link" data-username="row1" data-firstname="First1" data-lastname="Last1" data-email="email1@example.com" data-phone="123456789">row1</a></td> <td>First1 Last1</td> <td>123456789</td></tr>
+                    <tr> <td> <a href="#" class="popup-link" data-username="row2" data-firstname="First2" data-lastname="Last2" data-email="email2@example.com" data-phone="987654321">row2</a></td> <td>First2 Last2</td> <td>987654321</td></tr>
+                    <tr> <td> <a href="#" class="popup-link" data-username="row3" data-firstname="First3" data-lastname="Last3" data-email="email3@example.com" data-phone="111222333">row3</a></td> <td>First3 Last3</td> <td>111222333</td></tr>
+                </tbody>
+            </table>
+        </div>
+            <div class="pagination">
+                <a href="#">&lt;</a>
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">6</a>
+                <a href="#">&gt;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup structure -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <h2>Customer</h2>
+        <p><span>Username:</span> <span id="popup-username"></span></p>
+        <p><span>First name:</span> <span id="popup-firstname"></span></p>
+        <p><span>Last name:</span> <span id="popup-lastname"></span></p>
+        <p><span>Email:</span> <span id="popup-email"></span></p>
+        <p><span>Phone:</span> <span id="popup-phone"></span></p>
+        <button id="close-popup">Suspend</button>
+    </div>
+
+    <script>
+        // Get all the popup links
+        const popupLinks = document.querySelectorAll('.popup-link');
+        const popup = document.getElementById('popup');
+        const overlay = document.getElementById('overlay');
+        const closePopupButton = document.getElementById('close-popup');
+
+        // Popup fields
+        const popupUsername = document.getElementById('popup-username');
+        const popupFirstname = document.getElementById('popup-firstname');
+        const popupLastname = document.getElementById('popup-lastname');
+        const popupEmail = document.getElementById('popup-email');
+        const popupPhone = document.getElementById('popup-phone');
+
+        // Function to open the popup
+        popupLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Set the popup data
+                popupUsername.textContent = this.dataset.username;
+                popupFirstname.textContent = this.dataset.firstname;
+                popupLastname.textContent = this.dataset.lastname;
+                popupEmail.textContent = this.dataset.email;
+                popupPhone.textContent = this.dataset.phone;
+
+                // Show the popup and overlay
+                popup.classList.add('show');
+                overlay.classList.add('show');
+            });
+        });
+
+        // Function to close the popup
+        closePopupButton.addEventListener('click', function() {
+            popup.classList.remove('show');
+            overlay.classList.remove('show');
+        });
+
+        // Close popup when clicking outside
+        overlay.addEventListener('click', function() {
+            popup.classList.remove('show');
+            overlay.classList.remove('show');
+        });
+    </script>
+</body>
+</html>
