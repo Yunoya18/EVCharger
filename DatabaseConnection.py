@@ -253,19 +253,3 @@ class Database:
             return None
         finally:
             cursor.close()
-
-    def showHistory(self, user_id):
-        if self.connection is None or not self.connection.is_connected():
-            self.test_connection()
-        try:
-            cursor = self.connection.cursor()
-            query = "SELECT e.station_name, h.payment_id, h.start_time, h.end_time, h.booking_date, h.status FROM history h JOIN ev_stations e USING(station_id) WHERE h.user_id = %s"
-            cursor.execute(query, (user_id,))
-            data = cursor.fetchall()
-            return data
-        except Error as err:
-            print(f"Error: {err}")
-            return None
-        finally:
-            cursor.close()
-
