@@ -186,7 +186,7 @@ class Database:
                 databooking = cursor.fetchall()
             else:
                 query = "SELECT * FROM history"
-                cursor.execute(query)
+                cursor.execute(query, (user_id,))
                 databooking = cursor.fetchall()
             for booking in databooking:
                 nbooking = Booking(*booking)
