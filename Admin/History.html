@@ -15,9 +15,10 @@
         <div class="content">
             <div class="history-list">
             {% if all_history %}
-                {% for history in all_history %}
-                    <!-- history info-->
-                    
+                {% for booking in all_history %}
+                    <span>
+                        {{ booking.get_booking_id() }}
+                    </span>
                 {% endfor %}
             {% else %}
                 <span>No history.</span>

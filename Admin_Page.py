@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 
 class Announcement:
@@ -34,8 +33,8 @@ class Admin_main_page:
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
         self.__in_active_user = None #รอดึงข้อมูล
-        self.__total_customer = 0
-        self.__total_booking = 0
+        self.__total_customer = 0 #รอดึงข้อมูล
+        self.__total_booking = 0 #รอดึงข้อมูล
         self.setup_routes()
 
     def setup_routes(self):
@@ -80,9 +79,10 @@ class Customer_page:
 
 class History_page:
     def __init__(self):
+        from User_Package import History
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
-        self.__all_history = None #รอดึงข้อมูล
+        self.__all_history = History().get_booking_list()
         self.setup_routes()
 
     def setup_routes(self):
@@ -106,6 +106,9 @@ class Station_edit_page:
         @self.__router.get("/edit_station", response_class=HTMLResponse)
         async def edit_station(request: Request):
             return self.__templates.TemplateResponse("station_edit.html", {"request": request, "all_station": self.__all_station})
+        @self.__router.delete("/delete_station/{station_id}")
+        async def delete_station(station_id: int):
+            pass
 
     def get_router(self):
         return self.__router
