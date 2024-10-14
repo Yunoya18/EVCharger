@@ -502,8 +502,12 @@ class Login_Page:
             if user:
                 # Successful login: Store user information or set session here if needed
                 print(f"User logged in: {user[0]}")  # Log the user's first name
-                response = RedirectResponse(url="/", status_code=303)  # Redirect to main page on success
-                response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
+                if user[0] == 21:
+                    response = RedirectResponse(url="/admin", status_code=303)  # Redirect to main page on success
+                    response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
+                else:
+                    response = RedirectResponse(url="/", status_code=303)  # Redirect to main page on success
+                    response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
                 return response
             else:
                 return JSONResponse(status_code=400, content={"message": "Invalid username or password."})
