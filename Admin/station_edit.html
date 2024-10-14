@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Station Layout</title>
     <link rel="stylesheet" href="../static/css/station_edit.css">
+
+ 
 </head>
 <body>
     <div class="container">
@@ -22,10 +24,13 @@
                     </thead>
                     <tbody>
                         {% for station in all_station %}
+                        <tr class="tlist">
                             <td>Station {{ station.get_station_id() }}</td>
                             <td>{{ station.get_station_name() }}</td>
-                            <td>{{ station.get_status() }} </td>
-                            <td><button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button></td>
+                            <td>{{ station.get_status() }}</td>
+                            <td>
+                                <button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button>
+                            </td>
                             <div id="popup-modal-{{ station.get_station_id() }}" class="modal">
                                 <div class="modal-content">
                                     <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
@@ -34,6 +39,7 @@
                                     <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
                                 </div>
                             </div>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
