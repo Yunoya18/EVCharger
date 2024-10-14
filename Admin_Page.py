@@ -42,6 +42,9 @@ class Admin_main_page:
     def setup_routes(self):
         @self.__router.get("/admin", response_class=HTMLResponse)
         async def show_admin_main_page(request: Request):
+            return self.__templates.TemplateResponse("admin-main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
+        @self.__router.get("/main_admin", response_class=HTMLResponse)
+        async def show_admin_main_page(request: Request):
             return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
 
     def get_router(self):
