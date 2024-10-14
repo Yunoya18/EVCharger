@@ -135,21 +135,28 @@
         width: 100%;
         bottom: 0;
     }
+    .image-ev{
+    background-image: url("../static/img/ev-charge.png");
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat; 
+    height: 40vh;
+    margin-bottom: 20px;
+    }
     </style>
 </head>
 <body>
     <div class="header">
         <a href="/booking" class="back-btn" style="text-decoration: none;">&#8249;</a>
-        <h1>รอจินจา</h1>
+        <h1>Station</h1>
     </div>
     <form id="booking-form" action="/booking/station/{{station_id}}" method="post">
     <div class="container">
-        <div style="background-color: white; height: 40vh; margin-bottom: 20px;">
-            <img class="station-image" src="../static/img/station-image.jpg" alt="รอรูปจากจินจา">
+        <div class="image-ev">
         </div>
         <hr class="sepimg">
         <div class="station-info">
-            <h2>รอจินจาอ้า</h2>
+            <h2>Station</h2>
             <p>Description...</p>
         </div>
     </div>

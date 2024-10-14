@@ -71,7 +71,7 @@
         }
         .image{
             height: 70%;
-            background-image: url("../static/img/station_pic.png");
+            background-image: url("../static/img/ev-pic.jpg");
             background-size: cover;
         }
         .station-text{
@@ -100,7 +100,7 @@
         {% for station in all_station %}
             <div class="station">
             <div class="image">
-            
+
             </div>
             <div class="station-text">
                 {% if station.get_status() == "available"%}
