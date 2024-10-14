@@ -100,12 +100,18 @@
         {% for station in all_station %}
             <div class="station">
             <div class="image">
-                
+            
             </div>
             <div class="station-text">
+                {% if station.get_status() == "available"%}
                 <a href="/booking/station/{{ station.get_station_id() }}">
                     {{ station.get_station_name() }} - {{ station.get_status() }} - {{ station.get_price_per_hour() }}
                 </a>
+                {% else %}
+                <a>
+                    {{ station.get_station_name() }} - {{ station.get_status() }} - {{ station.get_price_per_hour() }}
+                </a>
+                {% endif%}
             </div>
             </div>
         {% endfor %}
