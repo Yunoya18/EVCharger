@@ -251,8 +251,8 @@ class Database:
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            query = "UPDATE history SET status = %s WHERE (booking_date < %s OR (booking_date = %s AND end_time < %s)) AND status != %s;"
-            cursor.execute(query, ("canceled",today,today,timetoday,"completed",))
+            query = "UPDATE history SET status = %s WHERE (booking_date < %s OR (booking_date = %s AND end_time < %s)) AND status NOT IN (%s,%s);"
+            cursor.execute(query, ("canceled",today,today,timetoday,"completed","ended",))
             self.connection.commit()
             query = "UPDATE history SET status = %s WHERE (booking_date < %s OR (booking_date = %s AND end_time < %s)) AND status = %s;"
             cursor.execute(query, ("ended",today,today,timetoday,"completed",))
