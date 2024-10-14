@@ -15,13 +15,13 @@
                     <span>
                         Station {{ station.get_station_id() }} - {{ station.get_station_name() }}
                     </span>
-                    <button class="edit-btn"id="edit-btn-{{ station.get_station_id() }}">Edit</button>
+                    <button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button>
                     <div id="popup-modal-{{ station.get_station_id() }}" class="modal">
                         <div class="modal-content">
                             <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
                             <h2>Station {{station.get_station_id()}}</h2>
                             <p>รู้ว่าต้องกดดู</p>
-                            <button class="delete-btn" data-station-id="{{ station.get_station_id() }}">Delete</button>
+                            <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
                         </div>
                     </div>
                 {% endfor %}
@@ -44,7 +44,7 @@
         const editBtn = document.querySelectorAll(".edit-btn");
         const modals = document.querySelectorAll(".modal");
         const closeBtn = document.querySelectorAll(".close-btn");
-        const deleteBtn = document.querySelectorAll(".delete-btn");
+        const changeBtn = document.querySelectorAll(".change-btn");
 
         // Add click event listeners to each edit button
         editBtn.forEach((btn, index) => {
@@ -60,13 +60,13 @@
             });
         });
 
-        deleteBtn.forEach((btn) => {
+        changeBtn.forEach((btn, index) => {
             btn.addEventListener("click", async() => {
                 const station_id = btn.getAttribute("data-station-id");
                 try {
-                    const response = await fetch(`/delete_station/${station_id}`, {method: "DELETE"});
+                    const response = await fetch(`/update_station/${station_id}`, {method: "POST"});
                     if (response.ok) {
-                        btn.closest("span")?.remove();
+                        modals[index].style.display = "none";
                     }
                 } catch (error) {
                     console.error("Error:", error);

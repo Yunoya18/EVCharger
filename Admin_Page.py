@@ -116,9 +116,9 @@ class Station_edit_page:
         @self.__router.get("/edit_station", response_class=HTMLResponse)
         async def edit_station(request: Request):
             return self.__templates.TemplateResponse("station_edit.html", {"request": request, "all_station": self.__all_station})
-        @self.__router.delete("/delete_station/{station_id}")
-        async def delete_station(station_id: int):
-            return self.__db.deleteStaion(station_id) #ติด foreign key
+        @self.__router.post("/update_station/{station_id}")
+        async def update_station(station_id: int):
+            return self.__db.updateStaionStatus(station_id) #ติด foreign key
 
     def get_router(self):
         return self.__router

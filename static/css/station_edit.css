@@ -67,7 +67,7 @@ h1 {
     color: #000;
 }
 
-.delete-btn {
+.change-btn {
     background-color: red;
     color: white;
     border: none;
@@ -78,7 +78,7 @@ h1 {
     margin-top: 20px;
 }
 
-.delete-btn:hover {
+.change-btn:hover {
     background-color: #930A00;
 
 }

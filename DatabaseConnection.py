@@ -264,15 +264,15 @@ class Database:
         finally:
             cursor.close()
 
-    def deleteStaion(self, station_id):
+    def updateStaionStatus(self, station_id):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            query = "DELETE FROM ev_stations WHERE station_id = %s"
+            query = "UPDATE ev_stations SET status = 'unavailable' WHERE station_id = %s"
             cursor.execute(query, (station_id,))
             self.connection.commit()
-            return {"message": f"Station with ID {station_id} has been deleted successfully."}
+            return {"message": f"Station with ID {station_id} has been updated successfully."}
         except Error as err:
             print(f"Error: {err}")
             return None
