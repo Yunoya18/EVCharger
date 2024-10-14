@@ -136,10 +136,10 @@
         bottom: 0;
     }
     .image-ev{
-    background-image: url("../static/img/ev-charge.png");
+    background-image: url("../../static/img/ev-charge.png");
     background-size: cover;
-    background-position: center; 
-    background-repeat: no-repeat; 
+    background-position: center;
+    background-repeat: no-repeat;
     height: 40vh;
     margin-bottom: 20px;
     }
@@ -150,7 +150,6 @@
         <a href="/booking" class="back-btn" style="text-decoration: none;">&#8249;</a>
         <h1>Station</h1>
     </div>
-    <form id="booking-form" action="/booking/station/{{station_id}}" method="post">
     <div class="container">
         <div class="image-ev">
         </div>
@@ -160,6 +159,7 @@
             <p>Description...</p>
         </div>
     </div>
+    <form id="booking-form" action="/booking/station/{{station_id}}" method="post">
     <div class="time-select">
         <h3>เลือกวัน เดือน ปี และเวลาในการจอง</h3>
         <label for="booking-date">เลือกวันที่:</label>
