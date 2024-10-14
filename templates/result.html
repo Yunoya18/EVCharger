@@ -10,13 +10,31 @@
     <a href="/" class="back-button" style="text-decoration: none;">&lt;</a>
     <div class="container">
         {% for item in history %}
-        <div class="item">
+        {% if item[5] == "canceled" %}
+        <div class="item" style="background-color: red;">
             <p><strong>StationName:</strong> {{ item[0] }}</p>
             <p><strong>Start Time:</strong> {{ item[2] }}</p>
             <p><strong>End Time:</strong> {{ item[3] }}</p>
             <p><strong>Date:</strong> {{ item[4] }}</p>
             <p><strong>Status:</strong> {{ item[5] }}</p>
         </div>
+        {% elif item[5] == "pending" %}
+        <div class="item" style="background-color: yellow;">
+            <p><strong>StationName:</strong> {{ item[0] }}</p>
+            <p><strong>Start Time:</strong> {{ item[2] }}</p>
+            <p><strong>End Time:</strong> {{ item[3] }}</p>
+            <p><strong>Date:</strong> {{ item[4] }}</p>
+            <p><strong>Status:</strong> {{ item[5] }}</p>
+        </div>
+        {% else %}
+        <div class="item" style="background-color: green;">
+            <p><strong>StationName:</strong> {{ item[0] }}</p>
+            <p><strong>Start Time:</strong> {{ item[2] }}</p>
+            <p><strong>End Time:</strong> {{ item[3] }}</p>
+            <p><strong>Date:</strong> {{ item[4] }}</p>
+            <p><strong>Status:</strong> {{ item[5] }}</p>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
 

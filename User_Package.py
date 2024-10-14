@@ -495,6 +495,9 @@ class Login_Page:
 
         @self.__router.post("/login")
         async def login_user(request: Request, username: str = Form(...), password: str = Form(...)):
+            user_id = request.cookies.get("user_id")
+            if user_id:
+                return JSONResponse(status_code=400, content={"message": "Please logout before login another account."})
             hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
             user = self.__database.validate_user(username, hash_password)
             if user:
@@ -726,6 +729,7 @@ class Result:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
+        self.__database = Database()
         self.setup_routes()
 
     def setup_routes(self):
@@ -734,7 +738,9 @@ class Result:
             user_id = request.cookies.get("user_id")
             if not user_id:
                 return RedirectResponse(url="/login")
-            return self.__templates.TemplateResponse("result.html", {"request": request})
+            data = self.__database.showHistory(user_id)
+            print(data, "<-- result")
+            return self.__templates.TemplateResponse("result.html", {"request": request, "history" : data})
 
     def get_router(self):
         return self.__router
