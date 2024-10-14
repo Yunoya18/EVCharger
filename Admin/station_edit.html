@@ -15,14 +15,14 @@
             {% if all_station %}
                 <table>
                     <thead>
-                        <tr>
+                        <tr class="thh">
                             <th>Station ID</th>
                             <th>Station Name</th>
                             <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bodylist">
                         {% for station in all_station %}
                         <tr class="tlist">
                             <td>Station {{ station.get_station_id() }}</td>
@@ -46,16 +46,6 @@
             {% else %}
                 <span>No stations available.</span>
             {% endif %}
-        </div>
-        <div class="pagination">
-            <button class="pagination-btn">&#8249;</button>
-            <button class="pagination-btn">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">4</button>
-            <button class="pagination-btn">5</button>
-            <button class="pagination-btn">6</button>
-            <button class="pagination-btn">&#8250;</button>
         </div>
     </div>
     <script>
