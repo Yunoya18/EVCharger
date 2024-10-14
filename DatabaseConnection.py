@@ -28,7 +28,6 @@ class Database:
     def insert_user(self, username: str, email: str, password: str):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
-
         try:
             cursor = self.connection.cursor()
             query = "INSERT INTO user (username, email, password) VALUES (%s, %s, %s)"
@@ -40,6 +39,7 @@ class Database:
             return False  # Indicate failure
         finally:
             cursor.close()
+            self.close_connection()
         return True  # Indicate success
 
     def close_connection(self):
@@ -62,6 +62,7 @@ class Database:
             return None
         finally:
             cursor.close()
+            self.close_connection()
     def getALLStation(self):
         from User_Package import Station
         if self.connection is None or not self.connection.is_connected():
@@ -86,7 +87,7 @@ class Database:
             return None
         finally:
             cursor.close()
-    
+            self.close_connection()
     def editProfileDB(self,user_id,email,firstname,surname,hash_password,phone,picture_data):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -123,7 +124,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def getUserInfo(self, user_id):
         from User_Package import User
         if self.connection is None or not self.connection.is_connected():
@@ -150,7 +151,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def getbooking_same(self,booking_date,booking_time_start,booking_time_end,station_id):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -165,7 +166,7 @@ class Database:
             return None
         finally:
             cursor.close()
-    
+            self.close_connection()
     def CreateBooking(self,user_id,station_id,booking_time_start,booking_time_end,booking_date,code,status="pending"):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -182,7 +183,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def gethistory(self,user_id):
         from User_Package import Booking
         if self.connection is None or not self.connection.is_connected():
@@ -207,7 +208,7 @@ class Database:
             return None
         finally:
             cursor.close()
-    
+            self.close_connection()
     def getBooking(self,booking_id):
         from User_Package import Booking
         from datetime import datetime
@@ -227,7 +228,7 @@ class Database:
             return None
         finally:
             cursor.close()
-    
+            self.close_connection()
     def UpdateBooking(self,booking_id,booking_time_start=None,booking_time_end=None,booking_date=None,status=None):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -245,7 +246,7 @@ class Database:
             return None
         finally:
             cursor.close()
-    
+            self.close_connection()
     def UpdateBookingALL(self, today,timetoday):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -263,7 +264,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def updateStaionStatus(self, station_id):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -278,7 +279,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def showHistory(self, user_id):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -293,7 +294,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def updateUserStatus(self, user_id):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -308,7 +309,7 @@ class Database:
             return None
         finally:
             cursor.close()
-
+            self.close_connection()
     def getUserWithCancel(self):
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
@@ -323,3 +324,4 @@ class Database:
             return None
         finally:
             cursor.close()
+            self.close_connection()
