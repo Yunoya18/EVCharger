@@ -14,35 +14,27 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>History ID</th>
                             <th>Station ID</th>
-                            <th>Station Name</th>
+                            <th>Booking Date</th>
+                            <th>Time</th>
                             <th>Status</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for station in all_station %}
+                        {% for booking in all_history %}
                         <tr class="tlist">
-                            <td>Station {{ station.get_station_id() }}</td>
-                            <td>{{ station.get_station_name() }}</td>
-                            <td>{{ station.get_status() }}</td>
-                            <td>
-                                <button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button>
-                            </td>
-                            <div id="popup-modal-{{ station.get_station_id() }}" class="modal">
-                                <div class="modal-content">
-                                    <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
-                                    <h2>Station {{station.get_station_id()}}</h2>
-                                    <p>รู้ว่าต้องกดดู</p>
-                                    <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
-                                </div>
-                            </div>
+                            <td>History {{ booking.get_booking_id() }}</td>
+                            <td>Station {{ booking.get_user() }}</td>
+                            <td>{{ booking.get_booking_date() }}</td>
+                            <td>{{ booking.get_start_time() }} - {{ booking.get_end_time() }} </td>
+                            <td>{{ booking.get_status() }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <span>No stations available.</span>
+                <span>No booking available.</span>
             {% endif %}
         </div>
         <div class="pagination">
@@ -56,49 +48,6 @@
             <button class="pagination-btn">&#8250;</button>
         </div>
     </div>
-    <script>
-        const editBtn = document.querySelectorAll(".edit-btn");
-        const modals = document.querySelectorAll(".modal");
-        const closeBtn = document.querySelectorAll(".close-btn");
-        const changeBtn = document.querySelectorAll(".change-btn");
-
-        // Add click event listeners to each edit button
-        editBtn.forEach((btn, index) => {
-            btn.addEventListener("click", () => {
-                modals[index].style.display = "block";
-            });
-        });
-
-        // Add click event listeners to each close button
-        closeBtn.forEach((btn, index) => {
-            btn.addEventListener("click", () => {
-                modals[index].style.display = "none";
-            });
-        });
-
-        changeBtn.forEach((btn, index) => {
-            btn.addEventListener("click", async() => {
-                const station_id = btn.getAttribute("data-station-id");
-                try {
-                    const response = await fetch(`/update_station/${station_id}`, {method: "POST"});
-                    if (response.ok) {
-                        modals[index].style.display = "none";
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            });
-        });
-
-        // Close the modal when clicking outside
-        window.onclick = function(event) {
-            modals.forEach((modal) => {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            });
-        }
-    </script>
 </body>
 </html>
 
