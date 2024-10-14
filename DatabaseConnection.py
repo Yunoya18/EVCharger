@@ -129,12 +129,22 @@ class Database:
         if self.connection is None or not self.connection.is_connected():
             self.test_connection()
         try:
+            user_list = []
             cursor = self.connection.cursor()
-            query = "SELECT * FROM user WHERE user_id = %s"
-            cursor.execute(query, (user_id,))
-            data_user = cursor.fetchone()
-            user = User(*data_user)
-            return user
+            if user_id:
+                query = "SELECT * FROM user WHERE user_id = %s"
+                cursor.execute(query, (user_id,))
+                data_user = cursor.fetchone()
+                user = User(*data_user)
+                return user
+            else:
+                query = "SELECT * FROM user"
+                cursor.execute(query)
+                data_user = cursor.fetchall()
+            for user in data_user:
+                nuser = User(*user)
+                user_list.append(nuser)
+            return user_list
         except Error as err:
             print(f"Error: {err}")
             return None
@@ -253,19 +263,3 @@ class Database:
             return None
         finally:
             cursor.close()
-
-    def showHistory(self, user_id):
-        if self.connection is None or not self.connection.is_connected():
-            self.test_connection()
-        try:
-            cursor = self.connection.cursor()
-            query = "SELECT e.station_name, h.payment_id, h.start_time, h.end_time, h.booking_date, h.status FROM history h JOIN ev_stations e USING(station_id) WHERE h.user_id = %s"
-            cursor.execute(query, (user_id,))
-            data = cursor.fetchall()
-            return data
-        except Error as err:
-            print(f"Error: {err}")
-            return None
-        finally:
-            cursor.close()
-

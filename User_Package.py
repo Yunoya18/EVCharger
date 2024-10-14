@@ -11,8 +11,6 @@ import base64
 import json
 from Admin_Page import Admin_main_page,Announcement_page,Customer_page,History_page,Station_edit_page
 
-
-
 # Class User
 class User:
     def __init__(self, user_id, username, email, password, firstname, surname, phone, profile, status):
@@ -78,6 +76,30 @@ class User:
 
     def set_status(self, status):
         self.__status = status
+
+class All_User:
+    def __init__(self):
+        self.__user_list = self.getAllUser()
+        self.__total_user = len(self.__user_list)
+    
+    def getAllUser(self):
+        database = Database()
+        user = database.getUserInfo(None)
+        return user
+    
+    # Getter methods
+    def get_user_list(self):
+        return self.__user_list
+    
+    def get_total_user(self):
+        return self.__total_user
+    
+    # Setter methods
+    def set_user_list(self, user_list):
+        self.__user_list = user_list
+
+    def set_total_user(self, total_user):
+        self.__total_user
 
 # Class Location
 class Location:
@@ -248,7 +270,8 @@ class Booking:
 class History:
     def __init__(self,user_id=None):
         self.__booking_list = self.getAllBooking(user_id)
-    
+        self.__total_booking = len(self.__booking_list)
+
     def getAllBooking(self,user_id=None):
         database = Database()
         list_booking = database.gethistory(user_id)
@@ -258,9 +281,15 @@ class History:
     def get_booking_list(self):
         return self.__booking_list
     
+    def get_total_booking(self):
+        return self.__total_booking
+    
     # Setter methods
     def set_booking_list(self,booking_list):
         self.__booking_list = booking_list
+
+    def set_total_booking(self, total_booking):
+        self.__total_booking = total_booking
 
 def get_current_user(request: Request):
     # Check for user cookie
@@ -468,9 +497,6 @@ class Login_Page:
 
         @self.__router.post("/login")
         async def login_user(request: Request, username: str = Form(...), password: str = Form(...)):
-            user_id = request.cookies.get("user_id")
-            if user_id:
-                return JSONResponse(status_code=400, content={"message": "Please logout before login another account."})
             hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
             user = self.__database.validate_user(username, hash_password)
             if user:
@@ -698,7 +724,6 @@ class Result:
     def __init__(self):
         self.__router = APIRouter()
         self.__templates = Jinja2Templates(directory="templates")
-        self.__database = Database()
         self.setup_routes()
 
     def setup_routes(self):
@@ -707,10 +732,8 @@ class Result:
             user_id = request.cookies.get("user_id")
             if not user_id:
                 return RedirectResponse(url="/login")
-            data = self.__database.showHistory(user_id)
-            print(data, "<-- result")
-            return self.__templates.TemplateResponse("result.html", {"request": request, "history" : data})
-        
+            return self.__templates.TemplateResponse("result.html", {"request": request})
+
     def get_router(self):
         return self.__router
 

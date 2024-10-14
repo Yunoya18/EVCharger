@@ -28,13 +28,15 @@ class Announcement:
     def set_created_time(self, created_time):
         self.__created_time = created_time
 
+#รอดึงข้อมูลขึ้น
 class Admin_main_page:
     def __init__(self):
+        from User_Package import History, All_User
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
         self.__in_active_user = None #รอดึงข้อมูล
-        self.__total_customer = 0 #รอดึงข้อมูล
-        self.__total_booking = 0 #รอดึงข้อมูล
+        self.__total_customer = All_User().get_total_user()
+        self.__total_booking = History().get_total_booking()
         self.setup_routes()
 
     def setup_routes(self):
@@ -45,6 +47,7 @@ class Admin_main_page:
     def get_router(self):
         return self.__router
 
+#อาจจะไม่ทำ
 class Announcement_page:
     def __init__(self):
         self.__router = APIRouter()
@@ -62,21 +65,24 @@ class Announcement_page:
     def get_router(self):
         return self.__router
 
+#ดึงข้อมูล customer แล้วแสดง
 class Customer_page:
     def __init__(self):
+        from User_Package import All_User
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
-        self.__all_customer = None
+        self.__all_customer = All_User().get_user_list()
         self.setup_routes()
 
     def setup_routes(self):
         @self.__router.get("/customer", response_class=HTMLResponse)
         async def show_customer(request: Request):
-            return self.__templates.TemplateResponse("Admin-Customer.html", {"request": request})
+            return self.__templates.TemplateResponse("Admin-Customer.html", {"request": request, "all_customer": self.__all_customer})
 
     def get_router(self):
         return self.__router
 
+#เหลือแสดงข้อมูลตามที่อยากได้ใน html page
 class History_page:
     def __init__(self):
         from User_Package import History
