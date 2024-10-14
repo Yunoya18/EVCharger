@@ -3,41 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <!-- ลิงก์ไปยังไฟล์ CSS -->
-    <link rel="stylesheet" href="../static/css/History2.css">
-    <!-- ลิงก์ไปยังฟอนต์ Krona One จาก Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+    <title>Station Layout</title>
+    <link rel="stylesheet" href="../static/css/station_edit.css">
 </head>
 <body>
-    <div class="main-content">
+    <div class="container">
         <h1>History</h1>
-        <div class="content">
-            <div class="history-list">
+        <div class="content-area">
             {% if all_history %}
-                {% for booking in all_history %}
-                    <span>
-                        {{ booking.get_booking_id() }}
-                    </span>
-                {% endfor %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Station ID</th>
+                            <th>Station Name</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for station in all_station %}
+                        <tr class="tlist">
+                            <td>Station {{ station.get_station_id() }}</td>
+                            <td>{{ station.get_station_name() }}</td>
+                            <td>{{ station.get_status() }}</td>
+                            <td>
+                                <button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button>
+                            </td>
+                            <div id="popup-modal-{{ station.get_station_id() }}" class="modal">
+                                <div class="modal-content">
+                                    <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
+                                    <h2>Station {{station.get_station_id()}}</h2>
+                                    <p>รู้ว่าต้องกดดู</p>
+                                    <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
+                                </div>
+                            </div>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
-                <span>No history.</span>
+                <span>No stations available.</span>
             {% endif %}
-            </div>
-            <div class="divider"></div>
-            <div class="lower">
-                <div class="pagination">
-                    <a href="#" class="prev">&lt;</a>
-                    <a href="#" class="page-number">1</a>
-                    <a href="#" class="page-number">2</a>
-                    <a href="#" class="page-number">3</a>
-                    <a href="#" class="page-number">4</a>
-                    <a href="#" class="page-number">5</a>
-                    <a href="#" class="page-number">6</a>
-                    <a href="#" class="next">&gt;</a>
-                </div>
-            </div>
+        </div>
+        <div class="pagination">
+            <button class="pagination-btn">&#8249;</button>
+            <button class="pagination-btn">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">6</button>
+            <button class="pagination-btn">&#8250;</button>
         </div>
     </div>
+    <script>
+        const editBtn = document.querySelectorAll(".edit-btn");
+        const modals = document.querySelectorAll(".modal");
+        const closeBtn = document.querySelectorAll(".close-btn");
+        const changeBtn = document.querySelectorAll(".change-btn");
+
+        // Add click event listeners to each edit button
+        editBtn.forEach((btn, index) => {
+            btn.addEventListener("click", () => {
+                modals[index].style.display = "block";
+            });
+        });
+
+        // Add click event listeners to each close button
+        closeBtn.forEach((btn, index) => {
+            btn.addEventListener("click", () => {
+                modals[index].style.display = "none";
+            });
+        });
+
+        changeBtn.forEach((btn, index) => {
+            btn.addEventListener("click", async() => {
+                const station_id = btn.getAttribute("data-station-id");
+                try {
+                    const response = await fetch(`/update_station/${station_id}`, {method: "POST"});
+                    if (response.ok) {
+                        modals[index].style.display = "none";
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            });
+        });
+
+        // Close the modal when clicking outside
+        window.onclick = function(event) {
+            modals.forEach((modal) => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
+
