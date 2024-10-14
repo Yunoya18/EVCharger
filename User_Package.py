@@ -420,16 +420,16 @@ class Booking_Station_list_page:
         station_lat = station.get_lat()
         station_lng = station.get_lng()
         
-        return self.haversine(lat, lng, station_lat, station_lng)
+        return self.haversine(lat, lng, station_lat, station_lng,station)
 
-    def haversine(self, lat1, lon1, lat2, lon2):
+    def haversine(self, lat1, lon1, lat2, lon2,station):
         import math
         R = 6371  # Radius of Earth in kilometers
         dLat = math.radians(lat2 - lat1)
         dLon = math.radians(lon2 - lon1)
         a = math.sin(dLat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon / 2) ** 2
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-        return R * c  # Distance in kilometers
+        return R * c,station.get_status()  # Distance in kilometers
     
     def get_router(self):
         return self.__router
