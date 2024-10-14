@@ -501,15 +501,18 @@ class Login_Page:
             hash_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
             user = self.__database.validate_user(username, hash_password)
             if user:
-                # Successful login: Store user information or set session here if needed
-                print(f"User logged in: {user[0]}")  # Log the user's first name
-                if user[0] == 21:
-                    response = RedirectResponse(url="/admin", status_code=303)  # Redirect to main page on success
-                    response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
+                print(f"User logged in: {user[0]}")  # Log the user's id
+                status = self.__database.getUserInfo(user[0]).get_status()
+                if status == "suspend":
+                    return JSONResponse(status_code=400, content={"message": "Your account was been suspend, please contact our support for me infomation"})
                 else:
-                    response = RedirectResponse(url="/", status_code=303)  # Redirect to main page on success
-                    response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
-                return response
+                    if user[0] == 21:
+                        response = RedirectResponse(url="/admin", status_code=303)  # Redirect to main page on success
+                        response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
+                    else:
+                        response = RedirectResponse(url="/", status_code=303)  # Redirect to main page on success
+                        response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
+                    return response
             else:
                 return JSONResponse(status_code=400, content={"message": "Invalid username or password."})
 
