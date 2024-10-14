@@ -293,3 +293,18 @@ class Database:
             return None
         finally:
             cursor.close()
+
+    def updateUserStatus(self, user_id):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "UPDATE user SET status = 'suspend' WHERE user_id = %s"
+            cursor.execute(query, (user_id,))
+            self.connection.commit()
+            return {"message": f"Station with ID {user_id} has been updated successfully."}
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()

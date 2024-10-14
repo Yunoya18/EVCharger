@@ -3,168 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer</title>
-    <link rel="stylesheet" href="../static/css/style1.css">
-    <style>
-        /* Add some basic styling for the popup */
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #e0e0e0;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            z-index: 1000;
-        }
-
-        .popup h2 {
-            margin: 0;
-            padding-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .popup p {
-            text-align: left;
-            margin: 10px 0;
-            font-size: 18px;
-        }
-
-        .popup button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .popup button:hover {
-            background-color: #ff5252;
-        }
-
-        
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 500;
-        }
-
-        .show {
-            display: block;
-        }
-    </style>
+    <title>Station Layout</title>
+    <link rel="stylesheet" href="../static/css/station_edit.css">
 </head>
 <body>
     <div class="container">
         <h1>Customer</h1>
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
+        <div class="content-area">
+            {% if all_customer %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in all_customer %}
+                        <tr class="tlist">
+                            <td>User {{ user.get_user_id() }}</td>
+                            <td>{{ user.get_username() }}</td>
+                            <td>{{ user.get_firstname() }} {{ user.get_surname() }}</td>
+                            <td id="status-{{ user.get_user_id() }}">{{ user.get_status() }}</td>
+                            <td>
+                                <button class="edit-btn" id="edit-btn-{{ user.get_user_id() }}">Edit</button>
+                            </td>
+                            <div id="popup-modal-{{ user.get_user_id() }}" class="modal">
+                                <div class="modal-content">
+                                    <span class="close-btn" id="close-btn-{{ user.get_user_id() }}">&times;</span>
+                                    <h2>User {{ user.get_user_id() }}</h2>
+                                    <p>{{ user.get_firstname() }} {{ user.get_surname() }}</p>
+                                    <button class="change-btn" data-user-id="{{ user.get_user_id() }}">Suspend</button>
+                                </div>
+                            </div>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <span>No user available.</span>
+            {% endif %}
         </div>
-    
-        <div class="krob">
-        <div class="krob-on"> 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr> <td> <a href="#"  data-username="row1" data-firstname="First1" data-lastname="Last1" data-email="email1@example.com" data-phone="123456789">row1</a></td> <td>First1 Last1</td> <td>123456789</td> 
-                        <!-- ทำปุ่ม edit customer ตรงนี้นะ -->
-                        <td><button class="popup-link"></button ></td></tr>
-                    <tr> <td> <a href="#"  data-username="row2" data-firstname="First2" data-lastname="Last2" data-email="email2@example.com" data-phone="987654321">row2</a></td> <td>First2 Last2</td> <td>987654321</td>
-                        <!-- ทำปุ่ม edit customer ตรงนี้นะ -->
-                        <td><button class="popup-link"></button></td></tr>
-                    <tr> <td> <a href="#"  data-username="row3" data-firstname="First3" data-lastname="Last3" data-email="email3@example.com" data-phone="111222333">row3</a></td> <td>First3 Last3</td> <td>111222333</td>
-                        <!-- ทำปุ่ม edit customer ตรงนี้นะ -->
-                        <td><button class="popup-link"></button></td></tr>
-                </tbody>
-            </table>
-        </div>
-            <div class="pagination">
-                <a href="#">&lt;</a>
-                <a href="#">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">6</a>
-                <a href="#">&gt;</a>
-            </div>
+        <div class="pagination">
+            <button class="pagination-btn">&#8249;</button>
+            <button class="pagination-btn">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">6</button>
+            <button class="pagination-btn">&#8250;</button>
         </div>
     </div>
-
-    <!-- Popup structure -->
-    <div class="overlay" id="overlay"></div>
-    <div class="popup" id="popup">
-        <h2>Customer</h2>
-        <p><span>Username:</span> <span id="popup-username"></span></p>
-        <p><span>First name:</span> <span id="popup-firstname"></span></p>
-        <p><span>Last name:</span> <span id="popup-lastname"></span></p>
-        <p><span>Email:</span> <span id="popup-email"></span></p>
-        <p><span>Phone:</span> <span id="popup-phone"></span></p>
-        <button id="close-popup">Suspend</button>
-    </div>
-
     <script>
-        // Get all the popup links
-        const popupLinks = document.querySelectorAll('.popup-link');
-        const popup = document.getElementById('popup');
-        const overlay = document.getElementById('overlay');
-        const closePopupButton = document.getElementById('close-popup');
+        const editBtn = document.querySelectorAll(".edit-btn");
+        const modals = document.querySelectorAll(".modal");
+        const closeBtn = document.querySelectorAll(".close-btn");
+        const changeBtn = document.querySelectorAll(".change-btn");
 
-        // Popup fields
-        const popupUsername = document.getElementById('popup-username');
-        const popupFirstname = document.getElementById('popup-firstname');
-        const popupLastname = document.getElementById('popup-lastname');
-        const popupEmail = document.getElementById('popup-email');
-        const popupPhone = document.getElementById('popup-phone');
-
-        // Function to open the popup
-        popupLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                // Set the popup data
-                popupUsername.textContent = this.dataset.username;
-                popupFirstname.textContent = this.dataset.firstname;
-                popupLastname.textContent = this.dataset.lastname;
-                popupEmail.textContent = this.dataset.email;
-                popupPhone.textContent = this.dataset.phone;
-
-                // Show the popup and overlay
-                popup.classList.add('show');
-                overlay.classList.add('show');
+        // Add click event listeners to each edit button
+        editBtn.forEach((btn, index) => {
+            btn.addEventListener("click", () => {
+                modals[index].style.display = "block";
             });
         });
 
-        // Function to close the popup
-        closePopupButton.addEventListener('click', function() {
-            popup.classList.remove('show');
-            overlay.classList.remove('show');
+        // Add click event listeners to each close button
+        closeBtn.forEach((btn, index) => {
+            btn.addEventListener("click", () => {
+                modals[index].style.display = "none";
+            });
         });
 
-        // Close popup when clicking outside
-        overlay.addEventListener('click', function() {
-            popup.classList.remove('show');
-            overlay.classList.remove('show');
+        changeBtn.forEach((btn, index) => {
+            btn.addEventListener("click", async() => {
+                const user_id = btn.getAttribute("data-user-id");
+                const statusElement = document.getElementById(`status-${user_id}`)
+                statusElement.textContent = "suspend";
+                try {
+                    const response = await fetch(`/update_user/${user_id}`, {method: "POST"});
+                    if (response.ok) {
+                        modals[index].style.display = "none";
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            });
         });
+
+        // Close the modal when clicking outside
+        window.onclick = function(event) {
+            modals.forEach((modal) => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
     </script>
 </body>
 </html>

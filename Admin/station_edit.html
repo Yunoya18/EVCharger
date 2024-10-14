@@ -35,7 +35,7 @@
                                 <div class="modal-content">
                                     <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
                                     <h2>Station {{station.get_station_id()}}</h2>
-                                    <p>รู้ว่าต้องกดดู</p>
+                                    <p>{{ station.get_station_name() }}</p>
                                     <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
                                 </div>
                             </div>
@@ -71,6 +71,8 @@
         changeBtn.forEach((btn, index) => {
             btn.addEventListener("click", async() => {
                 const station_id = btn.getAttribute("data-station-id");
+                const statusElement = document.getElementById(`status-${station_id}`)
+                statusElement.textContent = "unavailable";
                 try {
                     const response = await fetch(`/update_station/${station_id}`, {method: "POST"});
                     if (response.ok) {

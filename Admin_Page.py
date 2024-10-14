@@ -59,6 +59,7 @@ class Customer_page:
         from User_Package import All_User
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
+        self.__db = Database()
         self.__all_customer = All_User().get_user_list()
         self.setup_routes()
 
@@ -71,12 +72,11 @@ class Customer_page:
             return self.__templates.TemplateResponse("Admin-Customer.html", {"request": request, "all_customer": self.__all_customer})
         @self.__router.post("/update_user/{user_id}")
         async def update_user(user_id: int):
-            pass
+            return self.__db.updateUserStatus(user_id)
 
     def get_router(self):
         return self.__router
 
-#เหลือแสดงข้อมูลตามที่อยากได้ใน html page
 class History_page:
     def __init__(self):
         from User_Package import History
