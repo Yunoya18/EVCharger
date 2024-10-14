@@ -408,8 +408,6 @@ class Booking_Station_list_page:
             all_station = self.__all_station.get_station_list()
             if address:
                 all_station.sort(key=lambda station: self.sortstation(station, request))
-            if not user_id:
-                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("station-list.html", {"request": request, "all_station": all_station})
     
     def sortstation(self, station, request: Request):
