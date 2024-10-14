@@ -28,7 +28,12 @@ class Admin_main_page:
             if not user_id:
                 return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
-
+        @self.__router.get("/logout")
+        async def logout_user(request: Request):
+            response = RedirectResponse(url="/", status_code=303)
+            response.delete_cookie("user_id")  # Clear the username cookie
+            return response
+    
     def get_router(self):
         return self.__router
 
