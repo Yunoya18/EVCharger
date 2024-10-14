@@ -27,7 +27,7 @@
                         <tr class="tlist">
                             <td>Station {{ station.get_station_id() }}</td>
                             <td>{{ station.get_station_name() }}</td>
-                            <td>{{ station.get_status() }}</td>
+                            <td id="status-{{ station.get_station_id() }}">{{ station.get_status() }}</td>
                             <td>
                                 <button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button>
                             </td>
