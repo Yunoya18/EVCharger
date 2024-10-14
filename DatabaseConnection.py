@@ -263,3 +263,18 @@ class Database:
             return None
         finally:
             cursor.close()
+
+    def deleteStaion(self, station_id):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "DELETE FROM ev_stations WHERE station_id = %s"
+            cursor.execute(query, (station_id,))
+            self.connection.commit()
+            return {"message": f"Station with ID {station_id} has been deleted successfully."}
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()

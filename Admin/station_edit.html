@@ -21,7 +21,7 @@
                             <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
                             <h2>Station {{station.get_station_id()}}</h2>
                             <p>รู้ว่าต้องกดดู</p>
-                            <button class="delete-btn">Delete</button>
+                            <button class="delete-btn" data-station-id="{{ station.get_station_id() }}">Delete</button>
                         </div>
                     </div>
                 {% endfor %}
@@ -41,21 +41,36 @@
         </div>
     </div>
     <script>
-        const editButtons = document.querySelectorAll(".edit-btn");
+        const editBtn = document.querySelectorAll(".edit-btn");
         const modals = document.querySelectorAll(".modal");
-        const closeButtons = document.querySelectorAll(".close-btn");
+        const closeBtn = document.querySelectorAll(".close-btn");
+        const deleteBtn = document.querySelectorAll(".delete-btn");
 
         // Add click event listeners to each edit button
-        editButtons.forEach((btn, index) => {
+        editBtn.forEach((btn, index) => {
             btn.addEventListener("click", () => {
                 modals[index].style.display = "block";
             });
         });
 
         // Add click event listeners to each close button
-        closeButtons.forEach((btn, index) => {
+        closeBtn.forEach((btn, index) => {
             btn.addEventListener("click", () => {
                 modals[index].style.display = "none";
+            });
+        });
+
+        deleteBtn.forEach((btn) => {
+            btn.addEventListener("click", async() => {
+                const station_id = btn.getAttribute("data-station-id");
+                try {
+                    const response = await fetch(`/delete_station/${station_id}`, {method: "DELETE"});
+                    if (response.ok) {
+                        btn.closest("span")?.remove();
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
             });
         });
 
