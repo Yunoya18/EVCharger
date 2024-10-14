@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from DatabaseConnection import Database
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 
 #รอดึงข้อมูลขึ้น
 class Admin_main_page:
@@ -17,9 +18,15 @@ class Admin_main_page:
     def setup_routes(self):
         @self.__router.get("/admin", response_class=HTMLResponse)
         async def show_iframe_admin_page(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("admin-main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
         @self.__router.get("/main_admin", response_class=HTMLResponse)
         async def show_admin_main_page(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
 
     def get_router(self):
@@ -35,6 +42,9 @@ class Announcement_page:
     def setup_routes(self):
         @self.__router.get("/announcement", response_class=HTMLResponse)
         async def show_annoucement_page(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("Announcement.html", {"request": request})
         @self.__router.post("/announcement", response_class=HTMLResponse)
         async def create_announcement(request: Request):
@@ -55,6 +65,9 @@ class Customer_page:
     def setup_routes(self):
         @self.__router.get("/customer", response_class=HTMLResponse)
         async def show_customer(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("Admin-Customer.html", {"request": request, "all_customer": self.__all_customer})
         @self.__router.post("/update_user/{user_id}")
         async def update_user(user_id: int):
@@ -75,6 +88,9 @@ class History_page:
     def setup_routes(self):
         @self.__router.get("/history", response_class=HTMLResponse)
         async def show_history(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("History.html", {"request": request, "all_history": self.__all_history})
 
     def get_router(self):
@@ -92,6 +108,9 @@ class Station_edit_page:
     def setup_routes(self):
         @self.__router.get("/edit_station", response_class=HTMLResponse)
         async def edit_station(request: Request):
+            user_id = request.cookies.get("user_id")
+            if not user_id:
+                return RedirectResponse(url="/login")
             return self.__templates.TemplateResponse("station_edit.html", {"request": request, "all_station": self.__all_station})
         @self.__router.post("/update_station/{station_id}")
         async def update_station(station_id: int):
