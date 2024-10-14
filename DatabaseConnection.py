@@ -308,3 +308,18 @@ class Database:
             return None
         finally:
             cursor.close()
+
+    def getUserWithCancel(self):
+        if self.connection is None or not self.connection.is_connected():
+            self.test_connection()
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT user_id, username, COUNT(history.status) FROM history JOIN user USING (user_id) WHERE history.status = 'canceled' GROUP BY user_id ORDER BY COUNT(history.status) DESC LIMIT 5"
+            cursor.execute(query)
+            data = cursor.fetchall()
+            return data
+        except Error as err:
+            print(f"Error: {err}")
+            return None
+        finally:
+            cursor.close()

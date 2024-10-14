@@ -113,11 +113,28 @@
     <hr>
     <div class="bottom">
         <div class="status-section">
-            <h2>In-Active</h2>
-            {% if in_active_user %}
-                <!-- active user -->
+            <h2>Canceled User</h2>
+            {% if canceled_user %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Canceled Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in canceled_user %}
+                            <tr>
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1] }}</td>
+                                <td>{{ user[2] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
-                <p>No customers are currently active.</p>
+                <p>No customers are currently canceled.</p>
             {% endif %}
         </div>
         <div class="stats">

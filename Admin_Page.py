@@ -4,13 +4,12 @@ from fastapi.responses import HTMLResponse
 from DatabaseConnection import Database
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 
-#รอดึงข้อมูลขึ้น
 class Admin_main_page:
     def __init__(self):
         from User_Package import History, All_User
         self.__router = APIRouter()
         self.__templates= Jinja2Templates(directory="Admin")
-        self.__in_active_user = None #รอดึงข้อมูล
+        self.__canceled_user = Database().getUserWithCancel()
         self.__total_customer = All_User().get_total_user()
         self.__total_booking = History().get_total_booking()
         self.setup_routes()
@@ -21,13 +20,13 @@ class Admin_main_page:
             user_id = request.cookies.get("user_id")
             if not user_id:
                 return RedirectResponse(url="/login")
-            return self.__templates.TemplateResponse("admin-main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
+            return self.__templates.TemplateResponse("admin-main.html", {"request": request})
         @self.__router.get("/main_admin", response_class=HTMLResponse)
         async def show_admin_main_page(request: Request):
             user_id = request.cookies.get("user_id")
             if not user_id:
                 return RedirectResponse(url="/login")
-            return self.__templates.TemplateResponse("main.html", {"request": request, "in_active_user": self.__in_active_user, "total_customer": self.__total_customer, "total_booking": self.__total_booking})
+            return self.__templates.TemplateResponse("main.html", {"request": request, "total_customer": self.__total_customer, "total_booking": self.__total_booking, "canceled_user": self.__canceled_user})
         @self.__router.get("/logout")
         async def logout_user(request: Request):
             response = RedirectResponse(url="/", status_code=303)
@@ -37,28 +36,6 @@ class Admin_main_page:
     def get_router(self):
         return self.__router
 
-#อาจจะไม่ทำ
-class Announcement_page:
-    def __init__(self):
-        self.__router = APIRouter()
-        self.__templates= Jinja2Templates(directory="Admin")
-        self.setup_routes()
-
-    def setup_routes(self):
-        @self.__router.get("/announcement", response_class=HTMLResponse)
-        async def show_annoucement_page(request: Request):
-            user_id = request.cookies.get("user_id")
-            if not user_id:
-                return RedirectResponse(url="/login")
-            return self.__templates.TemplateResponse("Announcement.html", {"request": request})
-        @self.__router.post("/announcement", response_class=HTMLResponse)
-        async def create_announcement(request: Request):
-            pass
-
-    def get_router(self):
-        return self.__router
-
-#ดึงข้อมูล customer แล้วแสดง
 class Customer_page:
     def __init__(self):
         from User_Package import All_User
