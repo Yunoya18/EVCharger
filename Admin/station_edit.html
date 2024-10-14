@@ -5,26 +5,187 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Station Layout</title>
     <link rel="stylesheet" href="../static/css/station_edit.css">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+
+    }
+
+    h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    .content-area {
+        padding: 10px;
+        flex-grow: 1;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 10px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        background-color: rgba(0, 0, 0, 0.5); 
+    }
+
+    .modal-content {
+        background-color: #DEDEDE;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close-btn:hover {
+        color: #000;
+    }
+
+    .change-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .change-btn:hover {
+        background-color: #930A00;
+
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+
+    .pagination-btn {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .pagination-btn:hover {
+        background-color: #e0e0e0;
+    }
+
+    .edit-btn {
+        background-color: red;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .edit-btn:hover {
+        background-color: #930A00;
+    }
+
+
+
+
+    /* Table styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        overflow: hidden; /* ทำให้ขอบมุมมนแสดงผลถูกต้อง */
+    }
+
+    thead th {
+        text-align: left;
+        padding: 12px;
+        background-color: #f5f5f5;
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 2px solid #ddd;
+    }
+
+    tbody td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Station</h1>
         <div class="content-area">
             {% if all_station %}
-                {% for station in all_station %}
-                    <span>
-                        Station {{ station.get_station_id() }} - {{ station.get_station_name() }}
-                    </span>
-                    <button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button>
-                    <div id="popup-modal-{{ station.get_station_id() }}" class="modal">
-                        <div class="modal-content">
-                            <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
-                            <h2>Station {{station.get_station_id()}}</h2>
-                            <p>รู้ว่าต้องกดดู</p>
-                            <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
-                        </div>
-                    </div>
-                {% endfor %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Station ID</th>
+                            <th>Station Name</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for station in all_station %}
+                            <td>Station {{ station.get_station_id() }}</td>
+                            <td>{{ station.get_station_name() }}</td>
+                            <td><button class="edit-btn" id="edit-btn-{{ station.get_station_id() }}">Edit</button></td>
+                            <div id="popup-modal-{{ station.get_station_id() }}" class="modal">
+                                <div class="modal-content">
+                                    <span class="close-btn" id="close-btn-{{ station.get_station_id() }}">&times;</span>
+                                    <h2>Station {{station.get_station_id()}}</h2>
+                                    <p>รู้ว่าต้องกดดู</p>
+                                    <button class="change-btn" data-station-id="{{ station.get_station_id() }}">De-Activate</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
                 <span>No stations available.</span>
             {% endif %}

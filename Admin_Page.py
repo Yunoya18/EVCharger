@@ -3,32 +3,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from DatabaseConnection import Database
 
-class Announcement:
-    def __init__(self, announcement_id, announcement_text, created_time):
-        self.__announcement_id = announcement_id
-        self.__announcement_text = announcement_text
-        self.__created_time = created_time
-
-    #getter
-    def get_announcement_id(self):
-        return self.__announcement_id
-
-    def get_announcement_text(self):
-        return self.__announcement_text
-
-    def get_created_time(self):
-        return self.__created_time
-
-    #setter
-    def set_announcement_id(self, announcement_id):
-        self.__announcement_id = announcement_id
-
-    def set_announcement_text(self, announcement_text):
-        self.__announcement_text = announcement_text
-
-    def set_created_time(self, created_time):
-        self.__created_time = created_time
-
 #รอดึงข้อมูลขึ้น
 class Admin_main_page:
     def __init__(self):
@@ -82,6 +56,9 @@ class Customer_page:
         @self.__router.get("/customer", response_class=HTMLResponse)
         async def show_customer(request: Request):
             return self.__templates.TemplateResponse("Admin-Customer.html", {"request": request, "all_customer": self.__all_customer})
+        @self.__router.post("/update_user/{user_id}")
+        async def update_user(user_id: int):
+            pass
 
     def get_router(self):
         return self.__router
@@ -118,7 +95,7 @@ class Station_edit_page:
             return self.__templates.TemplateResponse("station_edit.html", {"request": request, "all_station": self.__all_station})
         @self.__router.post("/update_station/{station_id}")
         async def update_station(station_id: int):
-            return self.__db.updateStaionStatus(station_id) #ติด foreign key
+            return self.__db.updateStaionStatus(station_id)
 
     def get_router(self):
         return self.__router
