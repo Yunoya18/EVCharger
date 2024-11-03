@@ -5,9 +5,9 @@ from mysql.connector import Error
 class Database:
     def __init__(self):
         self.host = "sql12.freesqldatabase.com"
-        self.user = "sql12736570"
-        self.password = "BDNeWGZ58K"
-        self.database = "sql12736570"
+        self.user = "sql12742420"
+        self.password = "AbCrurkfC5"
+        self.database = "sql12742420"
         self.connection = None
 
     def test_connection(self):
@@ -172,8 +172,7 @@ class Database:
             self.test_connection()
         try:
             cursor = self.connection.cursor()
-            booking_time_start
-            booking_time_end
+            print(booking_time_start, booking_time_end)
             query = "INSERT INTO history (user_id,station_id,start_time,end_time,booking_date,codebooking,status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(query, (user_id,station_id,booking_time_start,booking_time_end,booking_date,code,status,))
             self.connection.commit()

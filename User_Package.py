@@ -504,7 +504,7 @@ class Login_Page:
                 if status == "suspend":
                     return JSONResponse(status_code=400, content={"message": "Your account was been suspend, please contact our support for me infomation"})
                 else:
-                    if user[0] == 21:
+                    if user[0] == 2:
                         response = RedirectResponse(url="/admin", status_code=303)  # Redirect to main page on success
                         response.set_cookie(key="user_id", value=user[0])  # Store username in cookie
                     else:
@@ -655,6 +655,9 @@ class Booking_List_page:
                 result = time1 <= time2 <= time3
                 dateb = booking.get_booking_date() == self.__timetoday[0] and result
                 listshow.append(dateb)
+                print(time1, time2, time3)
+                print(result, dateb)
+                print(booking.get_booking_date(), self.__timetoday[0])
             self.__database.UpdateBookingALL(self.__timetoday[0],time2)
             return self.__templates.TemplateResponse("Booking_list.html", {"request": request, "allbooking":zip(allbooking,listshow)})
         @self.__router.post("/booking_list/{booking_id}", response_class=HTMLResponse)
